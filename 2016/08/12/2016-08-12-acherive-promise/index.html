@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="Promise是js的一个异步流程控制标准，之前对async和promise的使用做了一个简单的对比，这次根据Promise/A+规范实现一个简单的Promise，以便对Promise有更深的了解">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Shadow Wood">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Promise的简单实现"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="undefined"/>
+    
+
+    <!-- Title -->
+    
+    <title>Promise的简单实现 - ShadowWood&#39;s Blog</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sass/main.css">
+
+    <!--[if lt IE 8]>
+        <script src="/js/ie/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/sass/ie8.css">
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/sass/ie9.css">
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Menu -->
+        <!-- Header -->
+<header id="header">
+    <div class="inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
+        </a>
+
+        <!-- Nav -->
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+    <h2>Menu</h2>
+    <ul>
+        
+            <li>
+                <a href="/">Home</a>
+            </li>
+        
+            <li>
+                <a href="/archives">Archives</a>
+            </li>
+        
+            <li>
+                <a href="/tags">Tags</a>
+            </li>
+        
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+        
+            <li>
+                <a href="/about">About</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+        <div id="main">
+            <div class="inner">
+
+                <!-- Main Content -->
+                
+
+    <h1 class="title">Promise的简单实现</h1>
+    <div class="meta">
+        2016-08-12
+    </div>
+
+
+<!-- Tags -->
+
+
+
+<div class="tags">
+    <a href="/tags/javascript/" class="button small">javascript</a> <a href="/tags/node-js/" class="button small">node.js</a> <a href="/tags/Promise/" class="button small">Promise</a>
+</div>
+
+
+
+
+    <span class="image main"><img src="http://7xu027.com1.z0.glb.clouddn.com/own-world.jpg" alt="" /></span>
+
+
+<!-- Gallery -->
+
+
+<!-- Content -->
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Promise是js的一个异步流程控制标准，是为了解决js中异步回调过多导致的代码结构混乱的问题。<br>Promise标准已经被写入了ES6的语法中，ES6已经有了原生的Promise对象。之前对async和promise的使用做了一个简单的对比，为了更好的理解Promise对异步回调的一个控制流程，这次根据Promise/A+规范实现一个简单的Promise。</p>
+<a id="more"></a>
+<h3 id="Promise-A"><a href="#Promise-A" class="headerlink" title="Promise/A+"></a>Promise/A+</h3><p>Promise/A+是一个开放、健全且通用的Javascript Promise标准，是由Javascript的开发者制定的，以供其他开发者参考。</p>
+<ul>
+<li><a href="https://promisesaplus.com/" target="_blank" rel="external">Promise/A+英文原文</a></li>
+<li><a href="http://malcolmyu.github.io/malnote/2015/06/12/Promises-A-Plus/" target="_blank" rel="external">Promise/A+中文解读</a></li>
+</ul>
+<p>上面是关于Promise/A+规范的资料，这里就不再对Promise/A+规范做进一步的解读了。</p>
+<h3 id="初始化Promise对象"><a href="#初始化Promise对象" class="headerlink" title="初始化Promise对象"></a>初始化Promise对象</h3><p>首先定义一个Promise对象：</p>
+<pre><code>function Promise(fn) {
+    var __self = {
+        status: &apos;Pending&apos;,
+        value: undefined,
+        options: [&apos;Pending&apos;, &apos;Resolved&apos;, &apos;Rejected&apos;]
+    }
+}
+</code></pre><p>在这个Promise对象之中，定义了一个私有变量__self:</p>
+<ul>
+<li>__self.status: 该值用来存储该Promise对象当前的状态</li>
+<li>__self.value: 该值用来存储Promise的终值(resolved时的value)或者拒绝的原因(rejected时的reason)</li>
+<li>__self.options: 该值为三个状态值的数组</li>
+</ul>
+<p>因为Promise/A+中规定，Promise对象状态一旦处于resolved或者rejected，其状态和值便不能更改，所以其状态值和终值必须存储在私有变量中，防止外部对其进行操作更改。</p>
+<p>但是这些私有变量也会涉及到值的更改，而且这些更改操作不一定在对象内部定义。所以在Promise对象定义的时候还需要定义一些set和get方法：</p>
+<pre><code>function Promise(fn) {
+    var __self = {
+        status: &apos;Pending&apos;,
+        value: undefined,
+        options: [&apos;Pending&apos;, &apos;Resolved&apos;, &apos;Rejected&apos;]
+    }
+
+    var self = this;
+
+    self.__getStatus = function () {
+        return __self.status
+    }
+
+    self.__setStatus = function (val) {
+        var index = __self.options.indexOf(val);
+        if (index === -1 || __self.status === &apos;Resolved&apos; || __self.status === &apos;Rejected&apos;) {
+            return false;
+        }
+
+        __self.status = val;
+        return true;
+    }
+
+    self.__getValue = function () {
+        return __self.value
+    }
+
+    self.__setValue = function () {
+        if (__self.status === &apos;Pending&apos;) {
+            __self.value = val;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}
+</code></pre><p>首先是status的get和set函数，get函数直接返回__self.status的值，而在set函数之中则需要加一些限制。<br>在Promise/A+标准中规定状态(status)的更改只能是从pending到resolved或者rejected，当状态为resolved或者rejcted的时候，便不能再更改状态。</p>
+<p>然后是value的get和set函数，get函数同理直接返回__self.value，而在set函数之中，要求只能是状态为pending的时候才能对值进行修改，否则修改无效。</p>
+<h3 id="resolve和reject"><a href="#resolve和reject" class="headerlink" title="resolve和reject"></a>resolve和reject</h3><p>在Promise对象实例化的时候，其参数函数中(例如的Promise对象参数fn)有两个参数: resolve和reject。<br>这两个参数是Promise对象实例化执行结束时调用的回调函数：</p>
+<ul>
+<li>resolve(value): 在执行成功时调用，将Promise对象的状态修改为resolved并且终值修改为传入的value</li>
+<li>reject(err): 在执行成功时调用，将Promise对象的状态修改为rejected并且将拒绝原因修改为传入的err</li>
+</ul>
+<p>这两个函数既可以定义在Promise对象外面，也可以定义在Promise对象里面。<br>当定义的Promise对象外面的时在之后执行的时候需要使用.bind(this)方法将Promise对象的this传入，所以其最终结果和定义在内部没有多少差异，所以这里还是采用定义在内部的方式：</p>
+<pre><code>function Promise(fn) {
+    var __self = {
+        status: &apos;Pending&apos;,
+        value: undefined,
+        options: [&apos;Pending&apos;, &apos;Resolved&apos;, &apos;Rejected&apos;]
+    }
+
+    var self = this;
+
+    self.onResolvedCallback = []; // Promise resolved 的回调函数集
+    self.onRejectedCallback = []; // Promise rejected 的回调函数集
+
+
+    /*****此处省略了之前的status和value的set和get函数******/
+
+    function resovle (val) {
+        self.__setValue(val);
+        self.__setStatus(&apos;Fulfilled&apos;)
+        for (var i = 0; i &lt; self.onResolvedCallback.length; i++) {
+            self.onResolvedCallback[i](val);
+        }
+    }
+
+    function reject (err) {
+        if (!err) {
+            return ;
+        }
+        self.__setValue(err);
+        self.__setStatus(&apos;Rejected&apos;);
+        for (var i = 0; i &lt; self.onRejectedCallback.length; i++) {
+            self.onRejectedCallback[i](err);
+        }
+    }
+
+    try {
+        fn(resolve, reject)
+    } catch (err) {
+        reject(err)
+    }
+
+}
+</code></pre><p>注意这次加入了两个特别的值，<code>onResolvedCallback</code> 和 <code>onRejectedCallback</code>，分别用来存储 Promise 对象 revolved 和 rejected 时的回调函数。<br>至于为什么需要使用这两个值以及这两个值实现了什么功能，这个在之后的构建.then方法的时候再详细解释。</p>
+<p>其实<code>resolve</code>和<code>reject</code>两个操作流程基本是一致的，都进行了三步操作：</p>
+<ol>
+<li>设置终值或拒绝原因;</li>
+<li>修改状态为<code>Resovled</code>或 <code>Rejected</code></li>
+<li>遍历回调函数集并执行回调函数；</li>
+</ol>
+<p>这两者操作的区别只在于状态值和回调函数集不同，所以这两个函数完全可以合并成一个操作函数。这里只是为了语义更清晰一点，这里还是决定分开写。<br>之后直接执行Promise对象的fn参数函数，并且传入<code>resovle</code> 和 <code>reject</code> 当作fn的参数，之后在fn内部执行回调。<br>注意，这里执行fn的时候必须使用try catch捕捉错误并执行reject，因为完全可能在fn的执行过程中出现错误，这一部分也需要在Promise对象里捕捉到。</p>
+<p>这里的<code>resolve</code>和<code>reject</code>还存在一个缺陷，就是在遍历<code>onRejectedCallback</code>和<code>onResolvedCallback</code>的时候可能会花费较大部分的时间，所以应该采用异步的写法，即加入setTimeout将其操作流程改成异步的:</p>
+<pre><code>function resovle (val) {
+    setTimeout(function() {
+        self.__setValue(val);
+        self.__setStatus(&apos;Fulfilled&apos;)
+        for (var i = 0; i &lt; self.onResolvedCallback.length; i++) {
+            self.onResolvedCallback[i](val);
+        }
+    })
+}
+
+function reject (err) {
+    if (!err) {
+        return ;
+    }
+    setTimeout(function() {
+        self.__setValue(err);
+        self.__setStatus(&apos;Rejected&apos;);
+        for (var i = 0; i &lt; self.onRejectedCallback.length; i++) {
+            self.onRejectedCallback[i](err);
+        }
+    })
+}
+</code></pre><h3 id="then方法"><a href="#then方法" class="headerlink" title=".then方法"></a>.then方法</h3><p><code>Promise</code>的<code>.then</code>方法是<code>Promise</code>对象的核心部分之一，可以说这个链式法则是Promise广受推崇的一个重要原因吧。<br>对于<code>.then</code>方法，有几个重点要特别注意:</p>
+<ul>
+<li><code>.then</code>方法返回的是一个Promise对象；</li>
+<li><code>.then</code>方法有两个参数<code>onResolved</code>和<code>onRejected</code>，分别为Promise状态为Resolved和Rejected时的回调函数；</li>
+<li><code>.then</code>方法可以在Promise还未执行完成的时候就开始执行，也就是说当Promise为<code>Pending</code>状态的时候，<code>.then</code>方法也可以执行；</li>
+</ul>
+<p>针对以上几个要点，这里先从调用<code>.then</code>方法时Promise已经Resovled来实现：</p>
+<pre><code>Promise.prototype.then = function (onResolved, onRejected) {
+    onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+    onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+    var self = this;
+    var status = self.__getStatus();
+    var value = self.__getValue();
+
+    if (status === &apos;Pending&apos;) {
+        return new Promise(function (resolve, reject) {
+            try {
+                var x = onResolved(value);
+                if (x instanceof Promise) {
+                    x.then(resolve, reject)
+                } else {
+                    resolve(x)
+                }
+            } catch (e) {
+                reject(e)
+            }
+        })
+    }
+}
+</code></pre><p>首先判断传入的参数<code>onResolved</code>和<code>onRejected</code>是否是函数，如果不是则分别默认为 <code>function (v) { return v }</code> 和 <code>function (e) { throw e }</code>，以便实现值的穿透(后面详细介绍)。<br>然后获取到当前Promise对象的<code>status</code> 和 <code>value</code>，并返回一个新的Promise对象，在新的Promise对象中，执行<code>onResolved</code>函数。<br>之后判断<code>onResolved</code>函数的返回值是否为Promise对象，如果是Promise对象，直接调用其<code>.then</code>方法并传入<code>resolve</code>和<code>reject</code>做为其<code>onResolved</code>和<code>onRejected</code>参数，如果不是则直接执行<code>resolve</code>。<br>在这个操作流程之中，需要使用<code>try catch</code>包装代码块并将捕捉到的错误传入<code>reject</code>执行，因为完全可能在执行<code>onResolved</code>的过程中出现错误而阻止后续代码的执行。</p>
+<p>当执行<code>.then</code>方法时Promise对象状态为<code>Rejected</code>的时候操作流程基本一致，只是将<code>onResovled</code>替换成<code>onRejected</code>就行了。<br>所以这里可以将生成新的Promise对象内部的操作流程写成一个新的函数：</p>
+<pre><code>function thenDeal(fn, value, resolve, reject) {
+    try {
+        var x = fn(value);
+        if (x instanceof Promise) {
+            x.then(resolve, reject)
+        } else {
+            resolve(x)
+        }
+    } catch (e) {
+        reject(e)
+    }
+}
+</code></pre><p>这个函数可以写在<code>.then</code>方法外面并直接调用：</p>
+<pre><code>Promise.prototype.then = function (onResolved, onRejected) {
+    onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+    onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+    var self = this;
+    var status = self.__getStatus();
+    var value = self.__getValue();
+    switch (status) {
+        case &apos;Resolved&apos;:
+            return new Promise(function (resolve, reject) {
+                thenDeal(onResolved, value, resolve, reject)
+            })
+
+        case &apos;Rejected&apos;:
+            return new Promise(function (resolve, reject) {
+                thenDeal(onRejected, value, resolve, reject)
+            })
+    }
+}
+</code></pre><p>接下来就是需要考虑当<code>.then</code>方法执行时，Promise对象还是<code>Pending</code>状态的情况了，这里就需要用到之前定义的回调函数集合<code>onResolvedCallback</code>和<code>onRejectedCallback</code>。<br>其实思路也并不复杂，只是需要注意一些值的调用，先给出完整的实现方法：</p>
+<pre><code>Promise.prototype.then = function (onResolved, onRejected) {
+    onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+    onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+    var self = this;
+    var status = self.__getStatus();
+    var value = self.__getValue();
+    switch (status) {
+        case &apos;Pending&apos;:
+            return new Promise(function (resolve, reject) {
+                self.onResolvedCallback.push(function () {
+                    thenDeal(onResolved, self.__getValue(), resolve, reject)
+                });
+                self.onRejectedCallback.push(function () {
+                    thenDeal(onRejected, self.__getValue(), resolve, reject)
+                })
+            });
+        case &apos;Revolved&apos;:
+            return new Promise(function (resolve, reject) {
+                thenDeal(onResolved, value, resolve, reject)
+            })
+
+        case &apos;Rejected&apos;:
+            return new Promise(function (resolve, reject) {
+                thenDeal(onRejected, value, resolve, reject)
+            })
+    }
+}
+
+function thenDeal(fn, value, resolve, reject) {
+    try {
+        var x = fn(value);
+        if (x instanceof Promise) {
+            x.then(resolve, reject)
+        } else {
+            resolve(x)
+        }
+    } catch (e) {
+        reject(e)
+    }
+}
+</code></pre><p>在<code>Pending</code>状态的时候，因为完全不清楚Promise最终的执行结果是<code>Resolved</code>还是<code>Rejected</code>，所以需要把<code>onResolved</code>和<code>onRejected</code>分别弄进<code>onResolvedCallback</code>和<code>onRejectedCallback</code>里，以传入回调函数的形式最终在里面执行<code>thenDeal</code>。<br>这里需要注意一个特别的点，那就是<code>thenDeal</code>的value参数(即<code>Resolved</code>时的<code>value</code>或<code>Rejected</code>时的<code>reason</code>)必须是实时的Promise对象的值，即Promise的终值或拒绝原因，这部分和之前的<code>Resolved</code>及<code>Rejected</code>状态时的处理方式不同。</p>
+<p><code>.catch</code>可以直接用<code>.then</code>方法来定义：</p>
+<pre><code>Promise.prototype.catch = function(onRejected) {
+    return this.then(null, onRejected)
+}
+</code></pre><p>对于这两行代码：</p>
+<pre><code>onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+</code></pre><p>条件判断的作用就不解释了，至于为什么要有<code>function (v) {return v}</code>和<code>function (e) {throw e}</code>的默认值，是为了实现Promise <code>.then</code>方法的值传递。例如：</p>
+<pre><code>var p = new Promise((resolve, reject) =&gt; resolve(1));
+p.then()
+ .then(v =&gt; {
+     console.log(1);
+     throw(2);
+  })
+ .then()
+ .catch(e =&gt; console.log(e))
+</code></pre><p>该代码的最终输出结果为 1 和 2。</p>
+<h3 id="Promise的解决过程"><a href="#Promise的解决过程" class="headerlink" title="Promise的解决过程"></a>Promise的解决过程</h3><p>在之前的<code>.then</code>方法实现里面的<code>thenDeal</code>方法是直接通过判断 <code>x instanceof Promise</code>来确实返回值是否是Promise对象，这种实现不符合Promise/A+规范的，并且无法和其他Promise交互。<br>在 <code>Promise/A+</code> 的2.3部分定义了Promise .then方法里的解决过程，并且阐述了<code>thenable</code>特性。原文翻译为：</p>
+<blockquote>
+<p>Promise解决过程是一个抽象的操作，其需输入一个<code>promise</code>和一个值，我们表示为 <code>[[Resolve]](promise, x)</code>，如果 <code>x</code> 有 <code>then</code> 方法且看上去像一个 <code>Promise</code> ，解决程序即尝试使 <code>promise</code> 接受 <code>x</code> 的状态；否则其用 <code>x</code> 的值来执行 <code>promise</code>。</p>
+</blockquote>
+<p>根据这个标准，需要加入一个<code>promiseResovle</code>方法来实现Promise解决过程，首先先明确这个<code>promiseResovle</code>方法的在之前的Promise实现需要插入的位置：</p>
+<pre><code>Promise.prototype.then = function (onResolved, onRejected) {
+    onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+    onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+    var self = this;
+    var status = self.__getStatus();
+    var value = self.__getValue();
+    switch (status) {
+        case &apos;Pending&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                self.onResolvedCallback.push(function () {
+                    thenDeal(onResolved, self.__getValue(), resolve, reject, promise2)
+                });
+                self.onRejectedCallback.push(function () {
+                    thenDeal(onRejected, self.__getValue(), resolve, reject, promise2)
+                })
+            });
+        case &apos;Revolved&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    thenDeal(onResolved, value, resolve, reject, promise2)
+                })
+            })
+
+        case &apos;Rejected&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    thenDeal(onRejected, value, resolve, reject, promise2)
+                })
+            })
+    }
+}
+
+function thenDeal(fn, value, resolve, reject, promise) {
+    try {
+        var x= fn(value);
+        promiseResovle(promise, x, resolve, reject);
+    } catch (e) {
+        reject(e)
+    }
+}
+</code></pre><p>相较于之前的代码，主要在<code>thenDeal</code>进行了修改，传入了即将返回的Promise对象<code>promise2</code>，并且将其传入<code>promiseResovle</code>中。<br><code>promiseResovle</code>的功能是对<code>onResolved</code>或者<code>onRejected</code>的返回值进行处理解决，使其能实现多种Promise的交互。</p>
+<p>根据<code>Promise/A+</code>的规定，<code>promiseResovle</code>需要依次判断三种情况：</p>
+<ol>
+<li>参数 <code>x</code> 与 参数 <code>promise</code> 相等时；</li>
+<li>参数 <code>x</code> 为 Promise(即自己定义的Promise，不是通用的或者其他的Promise对象)；</li>
+<li>参数 <code>x</code> 为对象或者函数；</li>
+</ol>
+<p>下面依次实现着三种情况的判断和要求。</p>
+<h4 id="参数-x-与-参数-promise-相等"><a href="#参数-x-与-参数-promise-相等" class="headerlink" title="参数 x 与 参数 promise 相等"></a>参数 <code>x</code> 与 参数 <code>promise</code> 相等</h4><p><code>Promise/A+</code>中规定，当参数 <code>x</code> 与 参数 <code>promise</code> 相等时，以<code>TypeError</code>为<code>reason</code>拒绝执行<code>promise</code>，实现代码如下：</p>
+<pre><code>function promiseResovle(promise, r, resolve, reject) {
+
+    if (r === promise) {
+        return reject(new TypeError(&apos;The promise has been circular used&apos;))
+    }
+}
+</code></pre><h4 id="参数-x-为-Promise"><a href="#参数-x-为-Promise" class="headerlink" title="参数 x 为 Promise"></a>参数 <code>x</code> 为 Promise</h4><p>接着当 <code>x</code>为Promise时：</p>
+<ul>
+<li>如果 <code>x</code> 处于等待态， <code>promise</code> 需保持为等待态直至 <code>x</code> 被执行或拒绝</li>
+<li>如果 <code>x</code> 处于执行态，用相同的值执行 <code>promise</code></li>
+<li>如果 <code>x</code> 处于拒绝态，用相同的据因拒绝 <code>promise</code></li>
+</ul>
+<p>接着之前的实现：</p>
+<pre><code>function promiseResovle(promise, r, resolve, reject) {
+
+    if (r === promise) {
+        return reject(new TypeError(&apos;The promise has been circular used&apos;))
+    }
+
+    if (r instanceof Promise) {
+        var status = r.__getStatus();
+        if (status === &apos;Pending&apos;) {
+            r.then(function(value) {
+                promiseResovle(promise, value, resolve, reject)
+            }, reject)
+        } else {
+            r.then(resolve, reject)
+        }
+
+        return ;
+    }
+}
+</code></pre><p>当 <code>x</code> 处于 <code>Pending</code>状态的时候，调用 <code>x</code> 的 <code>.then</code> 方法并在其中再次调用<code>promiseResolve</code>以待获取 <code>x</code> 的终值或拒因；<br>当 <code>x</code> 处于 <code>onRejected</code> 或者 <code>onResolved</code> 的时候，就可以直接执行 <code>x.then</code> 并传入 <code>resolve</code> 和 <code>reject</code> 来执行 <code>promise</code>；</p>
+<h4 id="参数-x-为对象或者函数"><a href="#参数-x-为对象或者函数" class="headerlink" title="参数 x 为对象或者函数"></a>参数 <code>x</code> 为对象或者函数</h4><p>当 <code>x</code> 为对象或者函数的时候，<code>Promise/A+</code>规定操作方法及顺序如下：</p>
+<ol>
+<li>把 <code>x.then</code> 赋值给 <code>then</code></li>
+<li>如果取 <code>x.then</code> 的值时抛出错误 <code>e</code> ，则以 <code>e</code> 为据因拒绝 <code>promise</code></li>
+<li>如果 <code>then</code> 是函数，将 <code>x</code> 作为函数的作用域 <code>this</code> 调用之。传递两个回调函数作为参数，第一个参数叫做 <code>resolvePromise</code> ，第二个参数叫做 <code>rejectPromise</code>:<ul>
+<li>如果 <code>resolvePromise</code> 以值 <code>y</code> 为参数被调用，则运行 <code>[[Resolve]](promise, y)</code></li>
+<li>如果 <code>rejectPromise</code> 以据因 <code>r</code> 为参数被调用，则以据因 <code>r</code> 拒绝 promise</li>
+<li>如果 <code>resolvePromise</code> 和 <code>rejectPromise</code> 均被调用，或者被同一参数调用了多次，则优先采用首次调用并忽略剩下的调用</li>
+<li>如果调用 <code>then</code> 方法抛出了异常 <code>e</code>：<ul>
+<li>如果 <code>resolvePromise</code> 或 <code>rejectPromise</code> 已经被调用，则忽略之</li>
+<li>否则以 <code>e</code> 为据因拒绝 <code>promise</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果 <code>then</code> 不是函数，以 <code>x</code> 为参数执行 <code>promise</code></li>
+<li>如果 <code>x</code> 不为对象或者函数，以 <code>x</code> 为参数执行 promise</li>
+</ol>
+<p>根据上述的规定，加上之前的实现，最终<code>promiseResolve</code>的定义如下：</p>
+<pre><code>function promiseResovle(promise, x, resolve, reject) {
+    var then;
+    var thenCalled = false;
+
+    if (x === promise) {
+        return reject(new TypeError(&apos;The promise has been circular used&apos;))
+    }
+
+    if (x instanceof Promise) {
+        var status = x.__getStatus();
+        if (status === &apos;Pending&apos;) {
+            x.then(function(value) {
+                promiseResovle(promise, value, resolve, reject)
+            }, reject)
+        } else {
+            x.then(resolve, reject)
+        }
+
+        return ;
+    }
+
+    function resolvePromise(y) {
+        if(thenCalled) return;
+        thenCalled = true;
+        promiseResolve(promise, y, resolve, reject)
+    }
+
+    function rejectPromise(r) {
+        if (thenCalled) return;
+        thenCalled = true;
+        reject(r)
+    }
+
+    if(x !== null &amp;&amp; (typeof x === &apos;Object&apos; || typeof x === &apos;function&apos;)) {
+        try {
+            then = x.then;
+            if (typeof then === &apos;function&apos;) {
+                then.call(x, resolvePromise, rejectPromise)
+            } else {
+                resolve(x)
+            }
+        } catch (e) {
+            reject(e)
+        }
+    } else {
+        resolve(x)
+    }
+}
+</code></pre><h3 id="完整版"><a href="#完整版" class="headerlink" title="完整版"></a>完整版</h3><p>最后，贴出完整版的Promise实现：</p>
+<pre><code>function Promise(fn) {
+    var __self = {
+        status: &apos;Pending&apos;,
+        value: undefined,
+        options: [&apos;Pending&apos;, &apos;Resolved&apos;, &apos;Rejected&apos;]
+    }
+
+    var self = this;
+
+    self.onResolvedCallback = []; // Promise resolved 的回调函数集
+    self.onRejectedCallback = []; // Promise rejected 的回调函数集
+
+
+    /*****status和value的set和get函数******/
+
+    self.__getStatus = function () {
+        return __self.status
+    }
+
+    self.__setStatus = function (val) {
+        var index = __self.options.indexOf(val);
+        if (index === -1 || __self.status === &apos;Resolved&apos; || __self.status === &apos;Rejected&apos;) {
+            return false;
+        }
+
+        __self.status = val;
+        return true;
+    }
+
+    self.__getValue = function () {
+        return __self.value
+    }
+
+    self.__setValue = function () {
+        if (__self.status === &apos;Pending&apos;) {
+            __self.value = val;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*********END**********/
+
+    /*******resolve 和 reject *******/
+
+    function resovle (val) {
+        setTimeout(function() {
+            self.__setValue(val);
+            self.__setStatus(&apos;Fulfilled&apos;)
+            for (var i = 0; i &lt; self.onResolvedCallback.length; i++) {
+                self.onResolvedCallback[i](val);
+            }
+        })
+    }
+
+    function reject (err) {
+        if (!err) {
+            return ;
+        }
+        setTimeout(function() {
+            self.__setValue(err);
+            self.__setStatus(&apos;Rejected&apos;);
+            for (var i = 0; i &lt; self.onRejectedCallback.length; i++) {
+                self.onRejectedCallback[i](err);
+            }
+        })
+    }
+
+    /***********END**********/
+
+    try {
+        fn(resolve, reject)
+    } catch (err) {
+        reject(err)
+    }
+
+}
+
+Promise.prototype.then = function (onResolved, onRejected) {
+    /*************定义回调函数集************/
+    onResolved = typeof onResolved === &apos;function&apos; ? onResolved : function (v) { return v };
+    onRejected = typeof onRejected === &apos;function&apos; ? onRejected : function (e) { throw e };
+    /************END************/
+    var self = this;
+    var status = self.__getStatus();
+    var value = self.__getValue();
+
+    switch (status) {
+
+        case &apos;Pending&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                self.onResolvedCallback.push(function () {
+                    thenDeal(onResolved, self.__getValue(), resolve, reject, promise2)
+                });
+                self.onRejectedCallback.push(function () {
+                    thenDeal(onRejected, self.__getValue(), resolve, reject, promise2)
+                })
+            });
+
+        case &apos;Revolved&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    thenDeal(onResolved, value, resolve, reject, promise2)
+                })
+            })
+
+        case &apos;Rejected&apos;:
+            return promise2 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    thenDeal(onRejected, value, resolve, reject, promise2)
+                })
+            })
+    }
+}
+
+function thenDeal(fn, value, resolve, reject, promise) {
+    try {
+        var x= fn(value);
+        promiseResovle(promise, x, resolve, reject);
+    } catch (e) {
+        reject(e)
+    }
+}
+
+function promiseResovle(promise, x, resolve, reject) {
+    var then;
+    var thenCalled = false;
+
+    if (x === promise) {
+        return reject(new TypeError(&apos;The promise has been circular used&apos;))
+    }
+
+    if (x instanceof Promise) {
+        var status = x.__getStatus();
+        if (status === &apos;Pending&apos;) {
+            x.then(function(value) {
+                promiseResovle(promise, value, resolve, reject)
+            }, reject)
+        } else {
+            x.then(resolve, reject)
+        }
+
+        return ;
+    }
+
+    function resolvePromise(y) {
+        if(thenCalled) return;
+        thenCalled = true;
+        promiseResolve(promise, y, resolve, reject)
+    }
+
+    function rejectPromise(r) {
+        if (thenCalled) return;
+        thenCalled = true;
+        reject(r)
+    }
+
+    if(x !== null &amp;&amp; (typeof x === &apos;Object&apos; || typeof x === &apos;function&apos;)) {
+        try {
+            then = x.then;
+            if (typeof then === &apos;function&apos;) {
+                then.call(x, resolvePromise, rejectPromise)
+            } else {
+                resolve(x)
+            }
+        } catch (e) {
+            reject(e)
+        }
+    } else {
+        resolve(x)
+    }
+}
+
+Promise.prototype.catch = function (onRejected) {
+    return this.then(null, onRejected)
+}
+
+module.exports = Promise;
+</code></pre><blockquote>
+<p>参考文献:<br><a href="https://promisesaplus.com/" target="_blank" rel="external">Promise/A+规范英文原文</a><br><a href="http://malcolmyu.github.io/malnote/2015/06/12/Promises-A-Plus/" target="_blank" rel="external">Promise/A+规范中文翻译</a><br><a href="https://github.com/xieranmaya/blog/issues/3" target="_blank" rel="external">剖析Promise内部结构</a></p>
+</blockquote>
+
+
+<!-- Comments -->
+<div>
+    
+
+
+</div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <section>
+            <h2>FriendLinks</h2>
+            <div>
+                
+                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
+                    
+                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
+                    
+                        <a href="http://www.lumiaxu.com/" target="_blank">Lumia Xu</a>&nbsp;&nbsp;
+                    
+                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
+                    
+                        <a href="http://ziriwong.cc/" target="_blank">ZiriWong</a>&nbsp;&nbsp;
+                    
+            </div>
+        </section>
+        <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+                
+                
+                
+                
+                
+                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
+                
+                
+                
+                
+                
+                
+                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
+                
+            </ul>
+        </section>
+        <ul class="copyright">
+            <li>&copy; 2016 - 2017 All rights reserved</li>
+            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
+            <li>Shadow Wood</li>
+        </ul>
+    </div>
+</footer>
+    </div>
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- skel -->
+<script src="/js/skel.min.js"></script>
+
+<!-- Custom Code -->
+<script src="/js/util.js"></script>
+
+<!--[if lte IE 8]>
+<script src="/js/ie/respond.min.js"></script>
+<![endif]-->
+
+<!-- Custom Code -->
+<script src="/js/main.js"></script>
+
+<!-- Gallery -->
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Shadow Wood">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="express源码分析"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="undefined"/>
+    
+
+    <!-- Title -->
+    
+    <title>express源码分析 - ShadowWood&#39;s Blog</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sass/main.css">
+
+    <!--[if lt IE 8]>
+        <script src="/js/ie/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/sass/ie8.css">
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/sass/ie9.css">
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Menu -->
+        <!-- Header -->
+<header id="header">
+    <div class="inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
+        </a>
+
+        <!-- Nav -->
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+    <h2>Menu</h2>
+    <ul>
+        
+            <li>
+                <a href="/">Home</a>
+            </li>
+        
+            <li>
+                <a href="/archives">Archives</a>
+            </li>
+        
+            <li>
+                <a href="/tags">Tags</a>
+            </li>
+        
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+        
+            <li>
+                <a href="/about">About</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+        <div id="main">
+            <div class="inner">
+
+                <!-- Main Content -->
+                
+
+    <h1 class="title">express源码分析</h1>
+    <div class="meta">
+        2016-08-27
+    </div>
+
+
+<!-- Tags -->
+
+
+
+<div class="tags">
+    <a href="/tags/javascript/" class="button small">javascript</a> <a href="/tags/node-js/" class="button small">node.js</a> <a href="/tags/express/" class="button small">express</a>
+</div>
+
+
+
+
+    <span class="image main"><img src="http://7xu027.com1.z0.glb.clouddn.com/own-world.jpg" alt="" /></span>
+
+
+<!-- Gallery -->
+
+
+<!-- Content -->
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
+<a id="more"></a>
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>直接<code>npm install express</code>，可以看到express的包结构如下：</p>
+<pre><code>├── lib
+│   ├── middleware
+│   │   ├── init.js
+│   │   └── query.js
+│   ├── router
+│   │   ├── index.js
+│   │   ├── layer.js
+│   │   └── route.js
+│   ├── application.js
+│   ├── express.js
+│   ├── request.js
+│   ├── response.js
+│   ├── utils.js
+│   └── view.js
+├── History.md
+├── index.js
+├── LICENSE
+├── package.json
+└── Readme.md
+</code></pre><p>express模块的入口是 index.js，该文件中又引入了./lib/express.js，并将其用module.exports导出。</p>
+<h3 id="express-js"><a href="#express-js" class="headerlink" title="express.js"></a>express.js</h3><p><code>lib/express.js</code>是对express所有定义及功能模块的整合，该文件的开头如下：</p>
+<pre><code>var EventEmitter = require(&apos;events&apos;).EventEmitter;
+var mixin = require(&apos;merge-descriptors&apos;);
+var proto = require(&apos;./application&apos;);
+var Route = require(&apos;./router/route&apos;);
+var Router = require(&apos;./router&apos;);
+var req = require(&apos;./request&apos;);
+var res = require(&apos;./response&apos;);
+
+exports = module.exports = createApplication;
+
+function createApplication() {
+    var app = function(req, res, next) {
+        app.handle(req, res, next);
+    };
+
+    mixin(app, EventEmitter.prototype, false);
+    mixin(app, proto, false);
+
+    app.request = { __proto__: req, app: app };
+    app.response = { __proto__: res, app: app };
+    app.init();
+    return app;
+}
+</code></pre><p>文件一开始便引入了一些基础模块，基本来说根据这些模块的引入基本对express结构基本有一些理解了，之后的分析思路也会沿着这些引入的文件来进行。<br>先大概介绍下这些模块做了哪些事情：</p>
+<ul>
+<li>EventEmitter: node.js的events模块</li>
+<li>mixin: 用来合并对象的工具</li>
+<li>proto: express应用的原型对象，在application.js里详细定义</li>
+<li>Route: 定义最基本Route对象，包括app.post,app.all等以及Router对象的http方法都是从这里继承的</li>
+<li>Router: 完整的Router对象，继承了Route的http方法，也集合了./router/layer.js下的路由初始化方法及路由处理方法，相当于是路由功能的整合</li>
+<li>req: request对象</li>
+<li>res: response对象</li>
+</ul>
+<p>在引入了这些模块之后，就有了整个express的应用创建方法<code>createApplication</code>，也相当于是express的一个main函数。<br>在<code>createApplication</code>函数中一开始就把需要返回的值<code>app</code>定义为一个函数，该函数有<code>req</code>, <code>res</code>, <code>next</code>三个参数，这不得不使人联想起app.get(‘/‘, function(req, res, next) {})里的req,res,next。在这个函数的内部则直接调用<code>app</code>的handle方法，并将<code>req</code>,<code>res</code>,<code>next</code>作为参数传入其中。<br><code>app.handle</code>这个方法是在<code>./application</code>中定义的并通过mixin将该方法合并到app对象上。</p>
+<pre><code>app.handle = function handle(req, res, callback) {
+    var router = this._router;
+
+    // final handler
+    var done = callback || finalhandler(req, res, {
+        env: this.get(&apos;env&apos;),
+        onerror: logerror.bind(this)
+    });
+
+    // no routes
+    if (!router) {
+        debug(&apos;no routes defined on app&apos;);
+        done();
+        return;
+    }
+
+    router.handle(req, res, done);
+};
+</code></pre><p>该方法的作用是将res, res逐级分发到express应用每个路由中，以便执行各个路由相匹配的操作。<br>其实这个函数最关键的部分是在router.handle(req, res, done)这个方法的执行上，这是真正的路由分发执行操作，在./router/index.js里面定义，之后会对这部分进行分析讲解。</p>
+<p>接着createApplication里的操作。在定义了app之后，执行了两个<code>mixin</code>方法，分别将 <code>EventEmitter</code> 和 <code>./application.js</code> 中的属性和方法合并到<code>app</code>之中。</p>
+<p>在 mixin 之后，createApplicaion 又使用了对象字面量的定义方法，定义了<code>app.request</code>和<code>app.response</code>对象，分别以 <code>./request.js</code> 和 <code>./response.js</code>为原型对象，并赋值app属性且指向app本身(这里是为了在之后的response对象或request对象中，能够使用this.app访问已经创建的express实例)。</p>
+<p>然后就是执行<code>app.init()</code>，这个<code>init()</code>方法也是在<code>./application.js</code>中定义的，用来初始化express应用的设置</p>
+<pre><code>app.init = function init() {
+    this.cache = {};
+    this.engines = {};
+    this.settings = {};
+
+    this.defaultConfiguration();
+};
+</code></pre><p>在createApplicaion的最后返回组建好的<code>app</code>对象。</p>
+<p>在createApplicaion之后，便是一些公共API的导出：</p>
+<pre><code>exports.application = proto;
+exports.request = req;
+exports.response = res;
+
+/**
+* Expose constructors.
+*/
+
+exports.Route = Route;
+exports.Router = Router;
+
+/**
+* Expose middleware
+*/
+
+exports.query = require(&apos;./middleware/query&apos;);
+exports.static = require(&apos;serve-static&apos;);
+</code></pre><p>对于这些公共api模块的功能和作用也不多说了，express的文档有相应的说明。</p>
+<p>在<code>./express.js</code>的最后，遍历了一个数组：</p>
+<pre><code>[
+    &apos;json&apos;,
+    &apos;urlencoded&apos;,
+    &apos;bodyParser&apos;,
+    &apos;compress&apos;,
+    &apos;cookieSession&apos;,
+    &apos;session&apos;,
+    &apos;logger&apos;,
+    &apos;cookieParser&apos;,
+    &apos;favicon&apos;,
+    &apos;responseTime&apos;,
+    &apos;errorHandler&apos;,
+    &apos;timeout&apos;,
+    &apos;methodOverride&apos;,
+    &apos;vhost&apos;,
+    &apos;csrf&apos;,
+    &apos;directory&apos;,
+    &apos;limit&apos;,
+    &apos;multipart&apos;,
+    &apos;staticCache&apos;,
+].forEach(function (name) {
+    Object.defineProperty(exports, name, {
+        get: function () {
+            throw new Error(&apos;Most middleware (like &apos; + name + &apos;) is no longer bundled with Express and must be installed separately. Please see https://github.com/senchalabs/connect#middleware.&apos;);
+        },
+        configurable: true
+    });
+});
+</code></pre><p>这是因为express 4.x之后，很多中间件依赖没有在express内部导入了，但是express有时会用到这些中间件，这里是一个中间件检测，告诉开发者数组内的中间件需要从外部install进来。</p>
+<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>./router文件夹下包括三个文件：</p>
+<ul>
+<li><code>layer.js</code>：定义中间件的基本数据结构</li>
+<li><code>route.js</code>：定义express的路由中间件Route;</li>
+<li><code>index.js</code>：定义一个中间件容器，也就是Router对象，用来存放路由中间件(Route)以及其他功能中间件</li>
+</ul>
+<blockquote>
+<p><code>Router</code> 和 <code>Route</code> 的区别：Router可以看作是一个中间件容器，不仅可以存放路由中间件（Route），还可以存放其他中间件；而Route仅仅是路由中间件，封装了路由信息。<br>Router和Route都各自维护了一个stack数组，该数组就是用来存放中间件和路由的。</p>
+</blockquote>
+<h4 id="layer-js"><a href="#layer-js" class="headerlink" title="layer.js"></a>layer.js</h4><p>首先来看layer.js中对于中间件的初始定义：</p>
+<pre><code>var pathRegexp = require(&apos;path-to-regxp&apos;);
+
+function Layer(path, options, fn) {
+    if (!(this instanceof Layer)) {
+        return new Layer(path, options, fn)
+    }
+
+    debug(&apos;new %s&apos;, path);
+    var opts = options || {};
+
+    this.handle = fn;
+    this.name = fn.name || &apos;&lt;anonymous&gt;&apos;;
+    this.params = undefined;
+    this.path = undefined;
+    this.regexp = pathRegexp(path, this.keys = [], opts);
+
+    if (path === &apos;/&apos; &amp;&amp; opts.end === false) {
+        this.regexp.fast_slash = true;
+    }
+}
+</code></pre><p><code>path</code>参数不用多说，就是传入的url字符串，这里使用了<code>path-to-regexp</code>这个库，用来匹配url字符串，<code>options</code>是<code>path-to-regexp</code>需要的配置参数，即为 {sensitive: Boolean, stric: Boolean, end: Boolean}。npm上有该库的详细使用说明，这里就不再讲解了。<br><code>fn</code>也就是中间件里的回调处理函数，在Layer初始化的时候将它赋值给了自己的<code>handle</code>属性。</p>
+<p>之后Layer还定义了三个操作方法：<code>handle_error</code>, <code>handle_request</code>, <code>match</code>。</p>
+<p><code>handle_error</code>就是定义的express应用中的错误处理部分，例如app.use(fuction(err, req, res, next){})最后就会执行到这里。<br><code>handle_request</code>定义的就是express应用中的路由中间件请求处理函数，也就是例如app.get(‘/test’, function(req, res, next){})的操作最后的执行位置。<br><code>match</code>定义的是匹配<code>path</code>参数的操作，使用<code>path-to-regexp</code>的操作方法，例如在请求过程中<code>/foo/23</code>与就会和之前定义的<code>/foo/:id</code>相匹配，并最终将对应的<code>23</code>赋值<code>req.params.id</code>，这一部分的操作需要结合<code>path-to-regexp</code>的操作方法去了解。</p>
+<p>整个Layer的定义其实并不复杂，它定义了中间件的基本数据结构，是后面Router和Route对象实现的基础。</p>
+<h4 id="route-js"><a href="#route-js" class="headerlink" title="route.js"></a>route.js</h4><p>同样，先从Route对象的初始化入手：</p>
+<pre><code>function Route(path) {
+    this.path = path;
+    this.stack = [];
+
+    debug(&apos;new %s&apos;, path);
+
+    this.methods = {};
+}
+</code></pre><p><code>path</code>参数不用多说，<code>stack</code>是一个存放layer组件的数组，<code>methods</code>是存放HTTP方法的Object，例如{‘get’: true, ‘post’: true}，即表示该Route中间件只能接受get和post方法。</p>
+<p>紧接着Route通过原型链的方式定义了两个与<code>methods</code>紧密相关的方法：</p>
+<ul>
+<li>_handles_method: 判断Route对象中是否存在method(传入参数)方法，并且如果method值为<code>head</code>，当作get方法处理；</li>
+<li>_options：返回Route对象的methods值，并且如果存在<code>get</code>，则再添加一个<code>head</code>值。</li>
+</ul>
+<p>然后就是比较重要的部分，中间件的派发操作：</p>
+<pre><code>Route.prototype.dispatch = function dispatch(req, res, done) {
+    var idx = 0;
+    var stack = this.stack;
+    if (stack.length === 0) {
+        return done();
+    }
+
+    var method = req.method.toLowerCase();
+    if (method === &apos;head&apos; &amp;&amp; !this.methods[&apos;head&apos;]) {
+        method = &apos;get&apos;;
+    }
+
+    req.route = this;
+
+    next();
+
+    function next(err) {
+        if (err &amp;&amp; err === &apos;route&apos;) {
+            return done();
+        }
+
+        var layer = stack[idx++];
+        if (!layer) {
+            return done(err);
+        }
+
+        if (layer.method &amp;&amp; layer.method !== method) {
+            return next(err);
+        }
+
+        if (err) {
+            layer.handle_error(err, req, res, next);
+        } else {
+            layer.handle_request(req, res, next);
+        }
+    }
+};
+</code></pre><p>在知道了<code>layer</code>和<code>stack</code>这两个事物的基础上，这个函数的操作流程就很好理解了，其实就是通过函数递归的方法，对Route对象的<code>stack</code>按插入顺序进行遍历，然后依次执行<code>stack</code>里的<code>layer</code>的过程。<br>当然，首先<code>req.method</code>也就是请求的http方法必须在Route对象中的methods之中。</p>
+<p>最后就是定义如何调用Route对应的HTTP方法,也就是<code>router.get</code>,<code>router.post</code>等最终执行的地方</p>
+<pre><code>Route.prototype.all = function all() {
+    var handles = flatten(slice.call(arguments));
+
+    for (var i = 0; i &lt; handles.length; i++) {
+        var handle = handles[i];
+
+        if (typeof handle !== &apos;function&apos;) {
+            var type = toString.call(handle);
+            var msg = &apos;Route.all() requires callback functions but got a &apos; + type;
+            throw new TypeError(msg);
+        }
+
+        var layer = Layer(&apos;/&apos;, {}, handle);
+        layer.method = undefined;
+
+        this.methods._all = true;
+        this.stack.push(layer);
+    }
+
+    return this;
+};
+
+methods.forEach(function(method){
+    Route.prototype[method] = function(){
+        var handles = flatten(slice.call(arguments));
+
+        for (var i = 0; i &lt; handles.length; i++) {
+            var handle = handles[i];
+
+            if (typeof handle !== &apos;function&apos;) {
+                var type = toString.call(handle);
+                var msg = &apos;Route.&apos; + method + &apos;() requires callback functions but got a &apos; + type;
+                throw new Error(msg);
+            }
+
+            debug(&apos;%s %s&apos;, method, this.path);
+
+            var layer = Layer(&apos;/&apos;, {}, handle);
+            layer.method = method;
+
+            this.methods[method] = true;
+            this.stack.push(layer);
+        }
+
+        return this;
+    };
+});
+</code></pre><p>两个代码块一个是定义了<code>Route.all</code>,一个是通过遍历<code>methods</code>(require(‘methods’)，存储了各种HTTP请求方法)将其中的元素赋值到成Route对象的属性，也就有了<code>Route.get</code>,<code>Route.post</code>等方法。<br>其实这两个代码块其中的执行流程都大同小异。<br>在这里需要注意的是定义<code>Route.method</code>(这里method指代all,get,post等)时，其中第一行代码</p>
+<pre><code>var handles = flatten(slice.call(arguments))
+</code></pre><p>这里的handles就是app.get(‘/path’, fn1, fn2, fn3)中的<code>fn1</code>,<code>fn2</code>,<code>fn3</code>等，也就是中间件的回调函数。<br>但是如果这样使用，有人会问不应该是slice.call(arguments, 1)，也就是从第二个参数开始截取吗？(slice 是 Array.prototype.slice，在route.js开头定义的)<br>刚开始看到这里的时候，笔者也有这个疑问，后来在index.js里面，也就是定义Router对象的地方，找到这么一段代码：</p>
+<pre><code>proto.route = function route(path) {
+    var route = new Route(path);
+
+    var layer = new Layer(path, {
+        sensitive: this.caseSensitive,
+        strict: this.strict,
+        end: true
+    }, route.dispatch.bind(route));
+
+    layer.route = route;
+
+    this.stack.push(layer);
+    return route;
+};
+
+// create Router#VERB functions
+methods.concat(&apos;all&apos;).forEach(function(method){
+    proto[method] = function(path){
+        var route = this.route(path)
+        route[method].apply(route, slice.call(arguments, 1));
+        return this;
+    };
+});
+</code></pre><p>这里可以看出Route是被放在了Router的<code>stack</code>里的<code>layer.route</code>，然后在调用类似Router[method](path, fn1, fn2)的时候，已经将其中path提取出来，并且直接通过调用<code>this.route(path)</code>赋值到<code>Route</code>中的<code>path</code>属性，之后将<code>fn1</code>,<code>fn2</code>通过<code>slice.call(arguments,1)</code>的方式截取出来，使用route[method].apply调用到Route.method方法。<br>所以在Route.method调用的时候，其arguments已经是回调函数<code>fn1</code>，<code>fn2</code>等的数组了。</p>
+<p>OK，解决了这个疑问，继续下一个重点，可以看见在Route.method的定义中，最终都返回了<code>this</code>，加上之前对于arguments的处理，就形成了路由中间件的灵活调用方法：</p>
+<pre><code>router.get(&apos;/path&apos;, fn1, fn2, fn3);
+
+router.get(&apos;/path&apos;, [fn1, [fn2, [fn3]]]);
+
+router.get(&apos;/path&apos;, fn1).get(&apos;/path&apos;, fn2).get(&apos;/path&apos;, fn3)
+</code></pre><p>这三个最终实现的结果是一样的，第一个和第二个没有什么区别，第三个有些许不一样，第一个和第二个在Router中’fn1,fn2,fn3’都是在同一个layer.route之中，而第三个则是在不同的layer.route之中。<br>第一个和第二个是通过遍历Route的stack来找到fn进行执行，而第三个是遍历Router的stack来找到fn进行执行。简单来说就是一个放在外层的stack，一个放在内层的stack。</p>
+<p>其实在route.js这部分必须要结合index.js来看，不然对于一些实现方法不是很好理解。</p>
+<h4 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h4><p>老规矩，还是先从导出对象的基本定义开始。</p>
+<pre><code>var proto = module.exports = function(options) {
+    var opts = options || {};
+
+    function router(req, res, next) {
+        router.handle(req, res, next);
+    }
+
+    // mixin Router class functions
+    router.__proto__ = proto;
+
+    router.params = {};
+    router._params = [];
+    router.caseSensitive = opts.caseSensitive;
+    router.mergeParams = opts.mergeParams;
+    router.strict = opts.strict;
+    router.stack = [];
+
+    return router;
+};
+</code></pre><p>这里的初始化定义应该不难看懂，options参数就是<code>pathRegexp</code>要求的三个配置参数<code>caseSensitive</code>,<code>mergeParams</code>,<code>strict</code>。<br><code>router.stack</code>前面也解释得比较多了，这里也不再赘述。<code>router.params</code>和<code>router._params</code>是定义app.params(param, fn)中会使用到存储对象。<br>需要注意的是Router最终返回的是 <code>router.handle(req,res,next)</code>的执行函数，<code>router.handle</code>是定义的Router中的路由派发操作，类似Route.dispatch，之后这里会详细解释。</p>
+<p>在这之后在Router对象上定义了param(name, fn)方法，这其实就是app.param(name, fn)定义的部分，这部分会在appliction.js绑定到app.param上，也就成了express文档里的app.param。这部分没有什么难以理解的地方，结合文档看基本可以理解，所以这里就跳过proto.param(name, fn)。</p>
+<p>之后就是在Router的初始化里提到过的router.handle的定义：</p>
+<pre><code>proto.handle = function handle(req, res, out) {
+    var self = this;
+
+    debug(&apos;dispatching %s %s&apos;, req.method, req.url);
+
+    var search = 1 + req.url.indexOf(&apos;?&apos;);
+    var pathlength = search ? search - 1 : req.url.length;
+    var fqdn = req.url[0] !== &apos;/&apos; &amp;&amp; 1 + req.url.substr(0, pathlength).indexOf(&apos;://&apos;);
+    var protohost = fqdn ? req.url.substr(0, req.url.indexOf(&apos;/&apos;, 2 + fqdn)) : &apos;&apos;;
+    var idx = 0;
+    var removed = &apos;&apos;;
+    var slashAdded = false;
+    var paramcalled = {};
+
+    // store options for OPTIONS request
+    // only used if OPTIONS request
+    var options = [];
+
+    // middleware and routes
+    var stack = self.stack;
+
+    // manage inter-router variables
+    var parentParams = req.params;
+    var parentUrl = req.baseUrl || &apos;&apos;;
+    var done = restore(out, req, &apos;baseUrl&apos;, &apos;next&apos;, &apos;params&apos;);
+
+    // setup next layer
+    req.next = next;
+
+    // for options requests, respond with a default if nothing else responds
+    if (req.method === &apos;OPTIONS&apos;) {
+        done = wrap(done, function(old, err) {
+            if (err || options.length === 0) return old(err);
+            sendOptionsResponse(res, options, old);
+        });
+    }
+
+    // setup basic req values
+    req.baseUrl = parentUrl;
+    req.originalUrl = req.originalUrl || req.url;
+
+    next();
+
+    function next(err) {
+        /**next 定义，暂时省略 **/
+    }
+
+    function trim_prefix(layer, layerError, layerPath, path) {
+        /**暂时省略 **/
+    }
+}
+</code></pre><p>因为这部分加上内部定义的函数的话，代码量比较多，一下贴出来不太容易理清思路，所以先将<code>next</code>和<code>trim_prefix</code>函数省略(<code>trim_prefix</code>是在<code>next</code>内部调用的)，先看看handle大概做了一件什么事情。<br>之前也说过<code>router.handle</code>是派发req和res到每个路由中间件的操作，联系之前提到的Route中的<code>dispatch</code>方法是通过函数调用的方法来遍历<code>stack</code>的中间件实现的req和res的派发，所以这里也是用了同样的操作：“通过递归调用<code>next</code>来实现路由派发”。<br>但是在调用next()之前，<code>router.handle</code>对<code>req.url</code>也就是原始的url进行了处理，把请求协议和search参数以及host都提取了出来，所以可以理解为在派发路由前，先对url做了一个预处理操作。</p>
+<p>接下来就是仔细看一下看<code>next</code>函数是具体定义了一个怎么样的操作：</p>
+<pre><code>function next(err) {
+    var layerError = err === &apos;route&apos;
+        ? null
+        : err;
+
+    // remove added slash
+    if (slashAdded) {
+        req.url = req.url.substr(1);
+        slashAdded = false;
+    }
+
+    // restore altered req.url
+    if (removed.length !== 0) {
+        req.baseUrl = parentUrl;
+        req.url = protohost + removed + req.url.substr(protohost.length);
+        removed = &apos;&apos;;
+    }
+
+    // no more matching layers
+    if (idx &gt;= stack.length) {
+        setImmediate(done, layerError);
+        return;
+    }
+
+    // get pathname of request
+    var path = getPathname(req);
+
+    if (path == null) {
+        return done(layerError);
+    }
+
+    // find next matching layer
+    var layer;
+    var match;
+    var route;
+
+    while (match !== true &amp;&amp; idx &lt; stack.length) {
+        layer = stack[idx++];
+        match = matchLayer(layer, path);
+        route = layer.route;
+
+        if (typeof match !== &apos;boolean&apos;) {
+            // hold on to layerError
+            layerError = layerError || match;
+        }
+
+        if (match !== true) {
+            continue;
+        }
+
+        if (!route) {
+            // process non-route handlers normally
+            continue;
+        }
+
+        if (layerError) {
+            // routes do not match with a pending error
+            match = false;
+            continue;
+        }
+
+        var method = req.method;
+        var has_method = route._handles_method(method);
+
+        // build up automatic options response
+        if (!has_method &amp;&amp; method === &apos;OPTIONS&apos;) {
+            appendMethods(options, route._options());
+        }
+
+        // don&apos;t even bother matching route
+        if (!has_method &amp;&amp; method !== &apos;HEAD&apos;) {
+            match = false;
+            continue;
+        }
+    }
+
+    // no match
+    if (match !== true) {
+        return done(layerError);
+    }
+
+    // store route for dispatch on change
+    if (route) {
+        req.route = route;
+    }
+
+    // Capture one-time layer values
+    req.params = self.mergeParams
+        ? mergeParams(layer.params, parentParams)
+        : layer.params;
+    var layerPath = layer.path;
+
+    // this should be done for the layer
+    self.process_params(layer, paramcalled, req, res, function (err) {
+        if (err) {
+            return next(layerError || err);
+        }
+
+        if (route) {
+            return layer.handle_request(req, res, next);
+        }
+
+        trim_prefix(layer, layerError, layerPath, path);
+    });
+}
+</code></pre><p>在这里主要关注一下stack的遍历操作。在<code>next</code>之中stack的遍历先是通过while循环判断<code>match</code>值来确定是否找到匹配的<code>layer</code>, <code>match</code>是通过调用<code>matchLayer</code>返回结果，该方法定义为：</p>
+<pre><code>function matchLayer(layer, path) {
+    try {
+        return layer.match(path);
+    } catch(err) {
+        return err;
+    }
+}
+</code></pre><p>其实就是调用<code>layer.match</code>，只是加了个try catch而已。</p>
+<p>如果while循环如果找到了匹配的layer，那么会就会调用<code>proto.process_params</code>的方法，也就是self.process_params()这部操作；</p>
+<p><code>proto.process_params</code>的源码这里就不贴出来了，了解一下操作流程就好。这个方法需要对应<code>proto.param</code>来理解，其实就是<strong><em>查询并调用</em></strong><code>proto.param</code>里面<strong><em>定义且匹配的</em></strong>与<code>req.param</code>绑定的function，这些回调函数都是存储在<code>proto.params</code>里面的，所以这里就又会有一个通过函数递归的遍历操作。<br>在遍历完了之后就是调用</p>
+<pre><code>function (err) {
+        if (err) {
+            return next(layerError || err);
+        }
+
+        if (route) {
+            return layer.handle_request(req, res, next);
+        }
+
+        trim_prefix(layer, layerError, layerPath, path);
+}
+</code></pre><p>如果<code>layer.route</code>是存在的，结合之前分析的<code>Layer</code>和<code>Route</code>以及在Route的分析中提前提到这部分后面定义的<code>Router.route</code>，也就是：</p>
+<pre><code>proto.route = function route(path) {
+    var route = new Route(path);
+
+    var layer = new Layer(path, {
+        sensitive: this.caseSensitive,
+        strict: this.strict,
+        end: true
+    }, route.dispatch.bind(route));
+
+    layer.route = route;
+
+    this.stack.push(layer);
+    return route;
+};
+</code></pre><p><code>layer.handle_request</code>会执行<code>layer.route</code>的<code>dispatch</code>操作，也就是在Route中派发路由最终执行到在express中定义的对应的路由操作函数，之后又执行<code>next()</code>就又到了这里的<code>proto.stack</code>中的下一个遍历操作。<br>但是如果<code>layer.route</code>不存在，说明这只是一个中间件而不是路由中间件，也就是用<code>route.use</code>定义的中间件，所以就调用<code>trim_prefix</code>方法来执行路由中间件：</p>
+<pre><code>function trim_prefix(layer, layerError, layerPath, path) {
+    var c = path[layerPath.length];
+    if (c &amp;&amp; &apos;/&apos; !== c &amp;&amp; &apos;.&apos; !== c) return next(layerError);
+
+        // Trim off the part of the url that matches the route
+        // middleware (.use stuff) needs to have the path stripped
+    if (layerPath.length !== 0) {
+        debug(&apos;trim prefix (%s) from url %s&apos;, layerPath, req.url);
+        removed = layerPath;
+        req.url = protohost + req.url.substr(protohost.length + removed.length);
+
+        // Ensure leading slash
+        if (!fqdn &amp;&amp; req.url[0] !== &apos;/&apos;) {
+            req.url = &apos;/&apos; + req.url;
+            slashAdded = true;
+        }
+
+        // Setup base URL (no trailing slash)
+        req.baseUrl = parentUrl + (removed[removed.length - 1] === &apos;/&apos;
+            ? removed.substring(0, removed.length - 1)
+            : removed);
+    }
+
+    debug(&apos;%s %s : %s&apos;, layer.name, layerPath, req.originalUrl);
+
+    if (layerError) {
+        layer.handle_error(layerError, req, res, next);
+    } else {
+        layer.handle_request(req, res, next);
+    }
+}
+</code></pre><p>这个方法是在<code>proto.handle</code>里定义，和<code>next</code>同级。</p>
+<p>OK，这里再回到while，如果while循环没有找到匹配的layer就进行收尾工作，要么就根据layerError也就是next(err)中的err参数判断是否已经匹配到结果正常首尾，或者就是404没找到匹配。</p>
+<p>分析到这里，这里使用两张图对上面的分析进行一个整理。</p>
+<p>首先是layer,Route和Router这三者的关系（原图片来自文章<a href="https://cnodejs.org/topic/545720506537f4d52c414d87" target="_blank" rel="external">从express源码中探析其路由机制</a>）</p>
+<p><img src="http://7xu027.com1.z0.glb.clouddn.com/router_route_layer.png" alt="layer,Route,Router"></p>
+<p>然后是<code>proto.handle</code>的一个执行流程：</p>
+<p><img src="http://7xu027.com1.z0.glb.clouddn.com/express_router_handle.png" alt="proto.handle"></p>
+<p>有了这两张图，再配合之前的文字描述，应该对路由这部分的处理不会有什么问题了。</p>
+<h3 id="application"><a href="#application" class="headerlink" title="application"></a>application</h3><p>application.js, 这里就是定义初始化express应用的地方，也就是express.js中的express应用的proto定义的地方，</p>
+<h3 id="request-和-response"><a href="#request-和-response" class="headerlink" title="request 和 response"></a>request 和 response</h3><h3 id="view"><a href="#view" class="headerlink" title="view"></a>view</h3><h3 id="从请求到响应"><a href="#从请求到响应" class="headerlink" title="从请求到响应"></a>从请求到响应</h3>
+
+<!-- Comments -->
+<div>
+    
+
+
+</div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <section>
+            <h2>FriendLinks</h2>
+            <div>
+                
+                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
+                    
+                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
+                    
+                        <a href="http://www.lumiaxu.com/" target="_blank">Lumia Xu</a>&nbsp;&nbsp;
+                    
+                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
+                    
+                        <a href="http://ziriwong.cc/" target="_blank">ZiriWong</a>&nbsp;&nbsp;
+                    
+            </div>
+        </section>
+        <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+                
+                
+                
+                
+                
+                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
+                
+                
+                
+                
+                
+                
+                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
+                
+            </ul>
+        </section>
+        <ul class="copyright">
+            <li>&copy; 2016 - 2017 All rights reserved</li>
+            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
+            <li>Shadow Wood</li>
+        </ul>
+    </div>
+</footer>
+    </div>
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- skel -->
+<script src="/js/skel.min.js"></script>
+
+<!-- Custom Code -->
+<script src="/js/util.js"></script>
+
+<!--[if lte IE 8]>
+<script src="/js/ie/respond.min.js"></script>
+<![endif]-->
+
+<!-- Custom Code -->
+<script src="/js/main.js"></script>
+
+<!-- Gallery -->
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+
+</html>

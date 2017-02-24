@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="最近在做express练习项目的时候需要解决一个图片异步上传的问题，简单分享下几种的实现方式">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Shadow Wood">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="js实现图片异步上传"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="undefined"/>
+    
+
+    <!-- Title -->
+    
+    <title>js实现图片异步上传 - ShadowWood&#39;s Blog</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sass/main.css">
+
+    <!--[if lt IE 8]>
+        <script src="/js/ie/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/sass/ie8.css">
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/sass/ie9.css">
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Menu -->
+        <!-- Header -->
+<header id="header">
+    <div class="inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
+        </a>
+
+        <!-- Nav -->
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+    <h2>Menu</h2>
+    <ul>
+        
+            <li>
+                <a href="/">Home</a>
+            </li>
+        
+            <li>
+                <a href="/archives">Archives</a>
+            </li>
+        
+            <li>
+                <a href="/tags">Tags</a>
+            </li>
+        
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+        
+            <li>
+                <a href="/about">About</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+        <div id="main">
+            <div class="inner">
+
+                <!-- Main Content -->
+                
+
+    <h1 class="title">js实现图片异步上传</h1>
+    <div class="meta">
+        2016-04-22
+    </div>
+
+
+<!-- Tags -->
+
+
+
+<div class="tags">
+    <a href="/tags/javascript/" class="button small">javascript</a> <a href="/tags/图片上传/" class="button small">图片上传</a> <a href="/tags/异步/" class="button small">异步</a>
+</div>
+
+
+
+
+    <span class="image main"><img src="http://7xu027.com1.z0.glb.clouddn.com/1085__shining-together_p.jpg" alt="" /></span>
+
+
+<!-- Gallery -->
+
+
+<!-- Content -->
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br><a id="more"></a></p>
+<h3 id="使用jquery的ajax方法实现"><a href="#使用jquery的ajax方法实现" class="headerlink" title="使用jquery的ajax方法实现"></a>使用jquery的ajax方法实现</h3><h4 id="前端表单"><a href="#前端表单" class="headerlink" title="前端表单"></a>前端表单</h4><pre><code>&lt;form id=&quot;avatar_form&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;input type=&quot;file&quot; name=&quot;avatar&quot;&gt;
+&lt;/form&gt;
+</code></pre><h4 id="js代码"><a href="#js代码" class="headerlink" title="js代码"></a>js代码</h4><pre><code>function uploadAvatar () {
+    var data = new FormData();
+    var files = $(&quot;input[name=&apos;avatar&apos;]&quot;)[0].files;
+    if (files) {
+        data.append(&quot;file&quot;, files[0])
+    } else {
+        alert(&quot;please choose a picture&quot;)
+    }
+
+    $.ajax({
+        type: &apos;put&apos;,
+        dataType: &apos;json&apos;,
+        url: &quot;/user/change_avatar&quot;
+        data: data,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            alert(&apos;success&apos;);
+        }
+    })
+}
+</code></pre><p>使用jquery的ajax方法实现的主要思想是<strong>我们重新构建一个表单，用jquery读取html中表单的图片信息，然后向新表单之中加入文件，并且不让ajax来自动处理我们的表单数据，直接将原始表单数据提交</strong></p>
+<p>相信大家也注意到了，在ajax的设置参数里，我们多了几个参数的设置：</p>
+<ul>
+<li>contentType</li>
+<li>processDate</li>
+</ul>
+<p>根据jquery ajax的官方文档<a href="http://api.jquery.com/jquery.ajax/" target="_blank" rel="external">http://api.jquery.com/jquery.ajax/</a>，这几个参数的设置主要是一下用途：</p>
+<ol>
+<li><p>contentType (值类型:Boolean or String, 默认值:’application/x-www-form-urlencoded; charset=UTF-8’)<br>这个值用来设置HTTP请求的content-type头信息，默认是’application/x-www-form-urlencoded; charset=UTF-8’。<br>在jQuery1.6版本之后，这个值可以设置为false，用来告诉jQuery不要设置请求的content-type头信息。<br>由于我们这里需要使用原始的表单，不需要jQuery帮我们设置content-type信息，FormData对象会根据表单的值来设置，故而将这个值设置为false。</p>
+</li>
+<li><p>processData (值类型:Boolean, 默认值: true)<br>这个值的设定是整个过程最重要的一部分，因为当这个值为true的时候，ajax会将data里的值处理成contentType里我们设置的类型，默认是”application/x-www-form-urlencoded”。<br>当这个值为false的时候，ajax就不会对data里的值进行处理，这正是我们所需要的</p>
+</li>
+</ol>
+<p>其实整个过程最重要的部分还是FormData。<br>FormData是XMLHttpRequest Level 2添加了一个新的接口.利用FormData对象,我们可以通过JavaScript用一些键值对来模拟一系列表单控件,<br>构造函数</p>
+<pre><code>new FormData(optional HTMLFormElement form)
+</code></pre><p>form 参数是一个可选的HTML表单元素,可以包含任何形式的表单控件,包括文件输入框。</p>
+<p>FormData对象还可以使用append方法添加键值对，如</p>
+<pre><code>var form = new FormData();
+
+form.append(&quot;name&quot;, &quot;testName&quot;);
+form.append(&quot;num&quot;, 123456); // 数字123456被立即转换成字符串&quot;123456&quot;
+
+// fileInputElement中已经包含了用户所选择的文件
+form.append(&quot;file&quot;, fileInputElement.files[0]);
+</code></pre><p>使用FormData最主要的优势便是我们可以用它构造表单来传输二进制文件，故而是异步上传图片的较好选择。<br>在浏览器的支持方面</p>
+<table>
+<thead>
+<tr>
+<th>Chrome</th>
+<th>FireFox(Gecko)</th>
+<th>IE</th>
+<th>Opera</th>
+<th>Safari</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7+</td>
+<td>4.0(2.0)</td>
+<td>10+</td>
+<td>12+</td>
+<td>5+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="XMLRequest实现"><a href="#XMLRequest实现" class="headerlink" title="XMLRequest实现"></a>XMLRequest实现</h3><p>当然除了ajax异步的方式，也可以是用XMLRequest的方式实现异步请求，如果是要传输二进制文件的话，一样是可以用到FormData对象来构造表单，然后用XMLRequest异步请求的方式将FormData对象当作表单提交即可。</p>
+<pre><code>var formEle = document.getElementById(&quot;avatar_form&quot;);
+var form = new FormData(formEle);
+
+var xReq = new XMLHttpRequest();
+xReq.open(&quot;PUT&quot;, &quot;/user/change_avatar&quot;, true);
+xReq.onload = function(oEvent) {
+    if (oReq.status == 200) {
+        alert(&quot;success&quot;);
+    } else {
+         alert(&quot;failed&quot;)
+    }
+};
+
+xReq.send(form);
+</code></pre>
+
+<!-- Comments -->
+<div>
+    
+
+
+</div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <section>
+            <h2>FriendLinks</h2>
+            <div>
+                
+                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
+                    
+                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
+                    
+                        <a href="http://www.lumiaxu.com/" target="_blank">Lumia Xu</a>&nbsp;&nbsp;
+                    
+                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
+                    
+                        <a href="http://ziriwong.cc/" target="_blank">ZiriWong</a>&nbsp;&nbsp;
+                    
+            </div>
+        </section>
+        <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+                
+                
+                
+                
+                
+                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
+                
+                
+                
+                
+                
+                
+                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
+                
+            </ul>
+        </section>
+        <ul class="copyright">
+            <li>&copy; 2016 - 2017 All rights reserved</li>
+            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
+            <li>Shadow Wood</li>
+        </ul>
+    </div>
+</footer>
+    </div>
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- skel -->
+<script src="/js/skel.min.js"></script>
+
+<!-- Custom Code -->
+<script src="/js/util.js"></script>
+
+<!--[if lte IE 8]>
+<script src="/js/ie/respond.min.js"></script>
+<![endif]-->
+
+<!-- Custom Code -->
+<script src="/js/main.js"></script>
+
+<!-- Gallery -->
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="异步流程的实现是node.js一个重要的模块，最近接触到async和Promise这两个node.js的异步模块，给大家做一下对比和简单的分享。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Shadow Wood">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="浅谈js异步流程框架async与Promise的区别"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="undefined"/>
+    
+
+    <!-- Title -->
+    
+    <title>浅谈js异步流程框架async与Promise的区别 - ShadowWood&#39;s Blog</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sass/main.css">
+
+    <!--[if lt IE 8]>
+        <script src="/js/ie/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/sass/ie8.css">
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/sass/ie9.css">
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Menu -->
+        <!-- Header -->
+<header id="header">
+    <div class="inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
+        </a>
+
+        <!-- Nav -->
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+    <h2>Menu</h2>
+    <ul>
+        
+            <li>
+                <a href="/">Home</a>
+            </li>
+        
+            <li>
+                <a href="/archives">Archives</a>
+            </li>
+        
+            <li>
+                <a href="/tags">Tags</a>
+            </li>
+        
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+        
+            <li>
+                <a href="/about">About</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+        <div id="main">
+            <div class="inner">
+
+                <!-- Main Content -->
+                
+
+    <h1 class="title">浅谈js异步流程框架async与Promise的区别</h1>
+    <div class="meta">
+        2016-04-25
+    </div>
+
+
+<!-- Tags -->
+
+
+
+<div class="tags">
+    <a href="/tags/javascript/" class="button small">javascript</a> <a href="/tags/异步/" class="button small">异步</a> <a href="/tags/node-js/" class="button small">node.js</a> <a href="/tags/async/" class="button small">async</a> <a href="/tags/Promise/" class="button small">Promise</a>
+</div>
+
+
+
+
+    <span class="image main"><img src="http://7xu027.com1.z0.glb.clouddn.com/own-world.jpg" alt="" /></span>
+
+
+<!-- Gallery -->
+
+
+<!-- Content -->
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在node.js中执行异步操作时，操作的结果并不是通过返回函数来反馈，而是通过将结果传入回调函数，由回调函数来处理运行结果。<br>如果在一个程序之中，我们需要多数的异步I/O操作，那么我们的回调结构将会是一层套一层不断的嵌套下去形成”callback hell(回调地狱)”。<br>虽然我们也可以通过声明函数的方法来简化回调结构并避免callback hell的产生，但是如果遇到一些比较复杂的依赖关系的话，可能依然会有一些问题。<br>最近接触到node.js两个不同的异步模块async和Promise，给大家做一下对比和分享。<br><a id="more"></a></p>
+<h3 id="async-和-Promise简介"><a href="#async-和-Promise简介" class="headerlink" title="async 和 Promise简介"></a>async 和 Promise简介</h3><p>async(<a href="https://github.com/caolan/async" target="_blank" rel="external">github</a>)是一个包含了许多js异步操作方法的node.js模块，其中共有70个函数，包括一些与数组类似的方法(map, each, filter, reduce…)，和一些异步流程方法(series, parallel, waterfall, …)。<br>这些方法都必须要求在node环境在才能运行实现，并且运行结果都是传递到一个回调函数里，一般都是两个参数，一个参数是错误异常error，另一个是操作结果。</p>
+<p>Promise应该算是一个异步操作标准。<br>Promise被定义为一个对象，来传递异步操作的消息，它代表了某个未来才会知道的结果的事件，并且这个事件提供统一的API，可供进一步的处理；Promise对象有两个特点：</p>
+<ul>
+<li>对象的状态不受外界影响；</li>
+<li>对象的状态一旦改变便不会再变，并且任何时候都可以得到这个结果。</li>
+</ul>
+<p>对于Promise的实现有很多js库，并且对于这些js库也有一套评价标准<a href="https://promisesaplus.com/" target="_blank" rel="external">Promise/A+</a>。<br>本文介绍的Promise使用的bluebird(<a href="http://bluebirdjs.com/docs/getting-started.html" target="_blank" rel="external">官方文档</a>)这个库。</p>
+<h3 id="一个简单的异步实现"><a href="#一个简单的异步实现" class="headerlink" title="一个简单的异步实现"></a>一个简单的异步实现</h3><p>我们来进行一个简单的操作：使用fs.readFile从read.txt里面读取文件内容，然后将读取的内容用writeFile写入write.txt。</p>
+<h4 id="不用async和Promise"><a href="#不用async和Promise" class="headerlink" title="不用async和Promise"></a>不用async和Promise</h4><pre><code>var fs = require(&apos;fs&apos;);
+fs.readFile(&apos;./read.txt&apos;, (err, data) =&gt; {
+    fs.writeFile(&apos;./write.txt&apos;, data, (err) =&gt; {
+        console.log(&quot;end&quot;);
+    })
+})
+</code></pre><h4 id="async"><a href="#async" class="headerlink" title="async"></a>async</h4><pre><code>var async = require(&apos;async&apos;);
+var fs = require(&apos;fs&apos;);
+async.waterfall([
+  callback =&gt; fs.readFile(&apos;./read.txt&apos;,
+    (err, data) =&gt; {
+      callback(null, data)
+  }),
+  (data, callback) =&gt; fs.writeFile(&apos;./write.txt&apos;,
+    data,
+    (err) =&gt; {
+      callback(err)
+    })
+], (err, r) =&gt; console.log(&quot;end&quot;));
+</code></pre><h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><pre><code>var Promise = require(&apos;bluebird&apos;);
+var fs = require(&apos;fs&apos;);
+var promise = new Promise((resolve, reject) =&gt; {
+  fs.readFile(&apos;./read.txt&apos;, (err, data) =&gt; {
+    if(err) reject(err);
+    resolve(data)
+  })
+});
+
+promise.then((data) =&gt; {
+  fs.writeFile(&apos;./write.txt&apos;, data, (err) =&gt; {
+    console.log(&quot;end&quot;)
+  })
+});
+</code></pre><p> 咋一看觉得不用async或者Promise好像结构还简单一些，那么如果我们是这样一个操作流程:</p>
+<pre><code>function a(data1, data2 =&gt; {
+    function b(data2, data3 =&gt; {
+        function c(data3, data4 =&gt; {
+            function d(data4, data5 =&gt; {
+                ....
+            })
+        })
+    })
+})
+</code></pre><p>也就是说当我们遇到有多层回调的时候，这个结构就相当难看了，当时如果用async或者Promise的话,可以将多层回调变成同步的样式来进行操作</p>
+<pre><code>//async
+async.waterfall([
+    cb =&gt; cb(err, data1),
+    cb =&gt; cb(err, data1, data2),
+    cb =&gt; cb(err, data2, data3),
+    cb =&gt; cb(err, data3, data4),
+    ...
+], (err, r) =&gt; console.log(&quot;end&quot;))
+
+// Promise
+var promise = new Promise((resolve, reject) =&gt; {
+    resolve(data1)
+})
+promise
+.then(data1 =&gt; return data2)
+.then(data2 =&gt; return data3)
+.then(data3 =&gt; return data4)
+...
+</code></pre><h3 id="简单对比"><a href="#简单对比" class="headerlink" title="简单对比"></a>简单对比</h3><p>async的主要实现方式挺容易理解的，它本质是提供了一系列的工具函数，来帮助解决多层回调的问题，最常见的方式就是将多个异步操作集合到数组里，然后根据这些异步操作的相互间的关系来选择它提供的方法进行实现。</p>
+<p>而Promise是将异步操作封装为对象，异步的结果输出到对象的.then()方法里，然后.then()方法的返回值又是一个Promise对象并且在.then()方法里return的值会传递到下一个.then()，即链式法则。</p>
+<p>在async中我们如果在处理上一个异步回调的结果的时候，又需要用一个异步回调，并且还需要将这个异步回调的结果传递给下一个异步回调的话，我们只需要将结果放在callback()里就行了。</p>
+<p>但是在Promise里，我们如果在.then()方法里还需要有异步操作，并且需要将这个异步操作的值传递出去，以便链式方法能够获取到这个参数该怎么办呢？</p>
+<p>这里我们在稍微改一下上一个例子，我们先向write.txt里面写入一个’test’字符串，操作成功后读取write.txt的内容并打印，然后再读取read.txt里面的内容，然后将之前内容覆盖并写入write.txt里面：</p>
+<pre><code>var Promise = require(&apos;bluebird&apos;);
+var fs = require(&apos;fs&apos;);
+var readFileAsync = Promise.promisify(fs.readFile);
+var writeFileAsync = Promise.promisify(fs.writeFile);
+
+writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
+  .then(() =&gt; readFileAsync(&apos;./write.txt&apos;))
+  .then((data) =&gt; {
+    console.log(data.toString());
+    return readFileAsync(&apos;./read.txt&apos;)
+  })
+  .then(data =&gt; writeFileAsync(&apos;./write.txt&apos;, data))
+  .then(() =&gt; readFileAsync(&apos;./write.txt&apos;))
+  .then(data =&gt; console.log(data.toString()));
+</code></pre><p>首先我们将fs.readFile和fs.writeFile通过bluebird的promisify方法做Promise封装，命名为readFileAsync和writeFileAsync。<br>这样它们的返回值就变成了Promise对象，并且它们的本来应该返回到回调函数里的结果返回到了.then()方法里。<br>因为我们只要在.then()方法里return Promise对象，.then()的值就是我们内层返回的Promise对象，故我们又可以继续用.then()来使用数据并且操作，依次类推。</p>
+<p>所以用Promise的进行多层异步回调的简化的一个基本思路就是，我们需要将这些异步回调想办法返回Promise对象，做Promise封装也好，重新构建一个Promise对象返回也好，都大同小异。</p>
+<p>而async的对多层回调简化的思路就是只需要将值传递到callback里，就能被外层的函数来获取到结果。</p>
+
+
+<!-- Comments -->
+<div>
+    
+
+
+</div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <section>
+            <h2>FriendLinks</h2>
+            <div>
+                
+                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
+                    
+                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
+                    
+                        <a href="http://www.lumiaxu.com/" target="_blank">Lumia Xu</a>&nbsp;&nbsp;
+                    
+                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
+                    
+                        <a href="http://ziriwong.cc/" target="_blank">ZiriWong</a>&nbsp;&nbsp;
+                    
+            </div>
+        </section>
+        <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+                
+                
+                
+                
+                
+                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
+                
+                
+                
+                
+                
+                
+                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
+                
+            </ul>
+        </section>
+        <ul class="copyright">
+            <li>&copy; 2016 - 2017 All rights reserved</li>
+            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
+            <li>Shadow Wood</li>
+        </ul>
+    </div>
+</footer>
+    </div>
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- skel -->
+<script src="/js/skel.min.js"></script>
+
+<!-- Custom Code -->
+<script src="/js/util.js"></script>
+
+<!--[if lte IE 8]>
+<script src="/js/ie/respond.min.js"></script>
+<![endif]-->
+
+<!-- Custom Code -->
+<script src="/js/main.js"></script>
+
+<!-- Gallery -->
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+
+</html>

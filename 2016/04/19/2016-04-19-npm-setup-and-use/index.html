@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="本文将介绍各平台下npm的安装以及npm常见命令的使用">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Shadow Wood">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="node.js的安装与npm的使用"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="undefined"/>
+    
+
+    <!-- Title -->
+    
+    <title>node.js的安装与npm的使用 - ShadowWood&#39;s Blog</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/sass/main.css">
+
+    <!--[if lt IE 8]>
+        <script src="/js/ie/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/sass/ie8.css">
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/sass/ie9.css">
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Menu -->
+        <!-- Header -->
+<header id="header">
+    <div class="inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
+        </a>
+
+        <!-- Nav -->
+        <nav>
+            <ul>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+
+<!-- Menu -->
+<nav id="menu">
+    <h2>Menu</h2>
+    <ul>
+        
+            <li>
+                <a href="/">Home</a>
+            </li>
+        
+            <li>
+                <a href="/archives">Archives</a>
+            </li>
+        
+            <li>
+                <a href="/tags">Tags</a>
+            </li>
+        
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+        
+            <li>
+                <a href="/about">About</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+        <div id="main">
+            <div class="inner">
+
+                <!-- Main Content -->
+                
+
+    <h1 class="title">node.js的安装与npm的使用</h1>
+    <div class="meta">
+        2016-04-19
+    </div>
+
+
+<!-- Tags -->
+
+
+
+<div class="tags">
+    <a href="/tags/nodejs/" class="button small">nodejs</a> <a href="/tags/npm/" class="button small">npm</a>
+</div>
+
+
+
+
+    <span class="image main"><img src="http://7xu027.com1.z0.glb.clouddn.com/node-js-wordpress.png" alt="" /></span>
+
+
+<!-- Gallery -->
+
+
+<!-- Content -->
+<h3 id="什么是npm"><a href="#什么是npm" class="headerlink" title="什么是npm"></a>什么是npm</h3><p>npm, Node Package Manager, 是随同node.js一起安装的包管理工具。该管理工具可用于从第三方网站上下载node.js包，常用于：</p>
+<ul>
+<li>允许开发者从npm服务器下载别人编写的第三方包到本地使用。</li>
+<li>允许开发者从npm服务器下载并安装别人编写的命令行程序到本地使用。</li>
+<li>允许开发者将自己编写的包或命令行程序上传到npm服务器供别人使用。</li>
+</ul>
+<p>从而方便开发者的项目构建和解决node.js项目部署上的很多问题。<br><a id="more"></a></p>
+<h3 id="node-js的安装"><a href="#node-js的安装" class="headerlink" title="node.js的安装"></a>node.js的安装</h3><p>node.js历史包版本下载地址 <a href="https://nodejs.org/dist/" target="_blank" rel="external">https://nodejs.org/dist/</a></p>
+<h4 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h4><ol>
+<li>下载安装包安装:</li>
+</ol>
+<p>在历史包版本里面找到最新版本的.msi文件，下载并执行安装；<br><br>在cmd里面输入path查看是否有npm的环境变量()，如果没有则需要将手动配置node.js和npm的环境变量，即将其安装路径添加到环境变量path之中就行（一般来说安装包里有选项会默认帮用户配置的）</p>
+<ol>
+<li>下载二进制文件安装:</li>
+</ol>
+<p>在历史包版本里找到最新版本的.exe文件，下载并运行即可;</p>
+<h4 id="linux-ubuntu"><a href="#linux-ubuntu" class="headerlink" title="linux ubuntu"></a>linux ubuntu</h4><ol>
+<li>从github上获取源码安装:</li>
+</ol>
+<p>在 Github 上获取 Node.js 源码：</p>
+<pre><code>$ sudo git clone https://github.com/nodejs/node.git
+</code></pre><p>修改目录权限：</p>
+<pre><code>$ sudo chmod 755 -R node
+</code></pre><p>使用 ./configure 创建编译文件，并按照：</p>
+<pre><code>$ cd node
+$ sudo ./configure
+$ sudo make
+$ sudo make install
+</code></pre><p>查看 node 版本：</p>
+<pre><code>$ node --version
+</code></pre><ol>
+<li>使用apt-get进行安装：</li>
+</ol>
+<p>直接运行以下命令即可：</p>
+<pre><code>sudo apt-get install nodejs
+sudo apt-get install npm
+</code></pre><h4 id="Mac-Os"><a href="#Mac-Os" class="headerlink" title="Mac Os"></a>Mac Os</h4><p>使用homebrew进行安装:</p>
+<pre><code>brew install node
+</code></pre><h3 id="npm常见命令与使用"><a href="#npm常见命令与使用" class="headerlink" title="npm常见命令与使用"></a>npm常见命令与使用</h3><h4 id="安装node-js的包"><a href="#安装node-js的包" class="headerlink" title="安装node.js的包"></a>安装node.js的包</h4><ol>
+<li><strong>npm install &lt;name&gt;</strong>  安装nodejs的依赖包</li>
+<li><strong>npm install &lt;name&gt; -g</strong>  将包安装到全局环境中<br><br>但是代码中，直接通过require()的方式是没有办法调用全局安装的包的。全局的安装是供命令行使用的</li>
+<li><strong>npm install &lt;name&gt; –save</strong>  安装的同时，将信息写入package.json中<br><br>项目路径中如果有package.json文件时，直接使用npm install方法就可以根据dependencies配置安装所有的依赖包</li>
+<li><strong>npm init</strong>  引导你创建一个package.json文件，包括名称、版本、作者这些信息等</li>
+<li><strong>npm remove &lt;name&gt;</strong> 移除包</li>
+<li><strong>npm update &lt;name&gt;</strong> 更新包</li>
+<li><strong>npm ls</strong> 列出当前安装的了所有包</li>
+<li><strong>npm root</strong> 查看当前包的安装路径<br>9 <strong>npm root -g</strong>  查看全局的包的安装路径</li>
+<li><strong>npm help</strong>  帮助，如果要单独查看install命令的帮助，可以使用的<strong>npm help install</strong></li>
+<li><strong>npm config set registry &lt;源地址&gt;</strong> npm换源命令，&lt;源地址&gt;的格式须以’<a href="http://&#39;或&#39;https://&#39;开头" target="_blank" rel="external">http://&#39;或&#39;https://&#39;开头</a></li>
+<li><strong>npm view &lt;name&gt; versions</strong> 查看npm包的历史版本</li>
+</ol>
+
+
+<!-- Comments -->
+<div>
+    
+
+
+</div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <section>
+            <h2>FriendLinks</h2>
+            <div>
+                
+                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
+                    
+                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
+                    
+                        <a href="http://www.lumiaxu.com/" target="_blank">Lumia Xu</a>&nbsp;&nbsp;
+                    
+                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
+                    
+                        <a href="http://ziriwong.cc/" target="_blank">ZiriWong</a>&nbsp;&nbsp;
+                    
+            </div>
+        </section>
+        <section>
+            <h2>Follow</h2>
+            <ul class="icons">
+                
+                
+                
+                
+                
+                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
+                
+                
+                
+                
+                
+                
+                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
+                
+            </ul>
+        </section>
+        <ul class="copyright">
+            <li>&copy; 2016 - 2017 All rights reserved</li>
+            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
+            <li>Shadow Wood</li>
+        </ul>
+    </div>
+</footer>
+    </div>
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- skel -->
+<script src="/js/skel.min.js"></script>
+
+<!-- Custom Code -->
+<script src="/js/util.js"></script>
+
+<!--[if lte IE 8]>
+<script src="/js/ie/respond.min.js"></script>
+<![endif]-->
+
+<!-- Custom Code -->
+<script src="/js/main.js"></script>
+
+<!-- Gallery -->
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+</body>
+
+</html>
