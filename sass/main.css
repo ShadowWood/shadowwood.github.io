@@ -2805,6 +2805,9 @@ button,
         padding-right: 20px;
         width: 100%; }
 
+#main .inner img {
+  max-width: 100%; }
+
 .layout {
   width: 100%;
   margin: 0 auto; }
