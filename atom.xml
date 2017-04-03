@@ -16,31 +16,6 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>使用typescript编写express应用(一)</title>
-    <link href="https://shadowwood.me/2017/02/21/2017-02-30-express-build-by-typescript/"/>
-    <id>https://shadowwood.me/2017/02/21/2017-02-30-express-build-by-typescript/</id>
-    <published>2017-02-21T12:51:30.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>开坑之作</p>
-]]></content>
-    
-    <summary type="html">
-    
-      本文将对typescript作一些简单介绍，然后示例如何使用typescript搭建一个基础的express应用
-    
-    </summary>
-    
-      <category term="Javascript" scheme="https://shadowwood.me/categories/Javascript/"/>
-    
-    
-      <category term="express" scheme="https://shadowwood.me/tags/express/"/>
-    
-      <category term="typescript" scheme="https://shadowwood.me/tags/typescript/"/>
-    
-  </entry>
-  
-  <entry>
     <title>使用elastcsearch + logstash + kibana搭建日志系统(一)</title>
     <link href="https://shadowwood.me/2017/02/21/2017-02-26-elastic-log-system/"/>
     <id>https://shadowwood.me/2017/02/21/2017-02-26-elastic-log-system/</id>
@@ -76,11 +51,11 @@
     <link href="https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/"/>
     <id>https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/</id>
     <published>2016-08-27T13:00:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2017-04-03T16:25:38.000Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
 <a id="more"></a>
-<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>直接<code>npm install express</code>，可以看到express的包结构如下：</p>
+<h2 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h2><p>直接<code>npm install express</code>，可以看到express的包结构如下：</p>
 <pre><code>├── lib
 │   ├── middleware
 │   │   ├── init.js
@@ -101,31 +76,9 @@
 ├── package.json
 └── Readme.md
 </code></pre><p>express模块的入口是 index.js，该文件中又引入了./lib/express.js，并将其用module.exports导出。</p>
-<h3 id="express-js"><a href="#express-js" class="headerlink" title="express.js"></a>express.js</h3><p><code>lib/express.js</code>是对express所有定义及功能模块的整合，该文件的开头如下：</p>
-<pre><code>var EventEmitter = require(&apos;events&apos;).EventEmitter;
-var mixin = require(&apos;merge-descriptors&apos;);
-var proto = require(&apos;./application&apos;);
-var Route = require(&apos;./router/route&apos;);
-var Router = require(&apos;./router&apos;);
-var req = require(&apos;./request&apos;);
-var res = require(&apos;./response&apos;);
-
-exports = module.exports = createApplication;
-
-function createApplication() {
-    var app = function(req, res, next) {
-        app.handle(req, res, next);
-    };
-
-    mixin(app, EventEmitter.prototype, false);
-    mixin(app, proto, false);
-
-    app.request = { __proto__: req, app: app };
-    app.response = { __proto__: res, app: app };
-    app.init();
-    return app;
-}
-</code></pre><p>文件一开始便引入了一些基础模块，基本来说根据这些模块的引入基本对express结构基本有一些理解了，之后的分析思路也会沿着这些引入的文件来进行。<br>先大概介绍下这些模块做了哪些事情：</p>
+<h2 id="express-js"><a href="#express-js" class="headerlink" title="express.js"></a>express.js</h2><p><code>lib/express.js</code>是对express所有定义及功能模块的整合，该文件的开头如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter;</div><div class="line"><span class="keyword">var</span> mixin = <span class="built_in">require</span>(<span class="string">'merge-descriptors'</span>);</div><div class="line"><span class="keyword">var</span> proto = <span class="built_in">require</span>(<span class="string">'./application'</span>);</div><div class="line"><span class="keyword">var</span> Route = <span class="built_in">require</span>(<span class="string">'./router/route'</span>);</div><div class="line"><span class="keyword">var</span> Router = <span class="built_in">require</span>(<span class="string">'./router'</span>);</div><div class="line"><span class="keyword">var</span> req = <span class="built_in">require</span>(<span class="string">'./request'</span>);</div><div class="line"><span class="keyword">var</span> res = <span class="built_in">require</span>(<span class="string">'./response'</span>);</div><div class="line"></div><div class="line">exports = <span class="built_in">module</span>.exports = createApplication;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createApplication</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> app = <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</div><div class="line">		app.handle(req, res, next);</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	mixin(app, EventEmitter.prototype, <span class="literal">false</span>);</div><div class="line">	mixin(app, proto, <span class="literal">false</span>);</div><div class="line"></div><div class="line">	<span class="comment">// expose the prototype that will get set on requests</span></div><div class="line">  app.request = <span class="built_in">Object</span>.create(req, &#123;</div><div class="line">    <span class="attr">app</span>: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</div><div class="line">  &#125;)</div><div class="line"></div><div class="line">	<span class="comment">// expose the prototype that will get set on responses</span></div><div class="line">  app.response = <span class="built_in">Object</span>.create(res, &#123;</div><div class="line">    <span class="attr">app</span>: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</div><div class="line">  &#125;)</div><div class="line"></div><div class="line">	app.init();</div><div class="line">	<span class="keyword">return</span> app;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>文件一开始便引入了一些基础模块，基本来说根据这些模块的引入基本对express结构基本有一些理解了，之后的分析思路也会沿着这些引入的文件来进行。<br>先大概介绍下这些模块做了哪些事情：</p>
 <ul>
 <li>EventEmitter: node.js的events模块</li>
 <li>mixin: 用来合并对象的工具</li>
@@ -136,86 +89,19 @@ function createApplication() {
 <li>res: response对象</li>
 </ul>
 <p>在引入了这些模块之后，就有了整个express的应用创建方法<code>createApplication</code>，也相当于是express的一个main函数。<br>在<code>createApplication</code>函数中一开始就把需要返回的值<code>app</code>定义为一个函数，该函数有<code>req</code>, <code>res</code>, <code>next</code>三个参数，这不得不使人联想起app.get(‘/‘, function(req, res, next) {})里的req,res,next。在这个函数的内部则直接调用<code>app</code>的handle方法，并将<code>req</code>,<code>res</code>,<code>next</code>作为参数传入其中。<br><code>app.handle</code>这个方法是在<code>./application</code>中定义的并通过mixin将该方法合并到app对象上。</p>
-<pre><code>app.handle = function handle(req, res, callback) {
-    var router = this._router;
-
-    // final handler
-    var done = callback || finalhandler(req, res, {
-        env: this.get(&apos;env&apos;),
-        onerror: logerror.bind(this)
-    });
-
-    // no routes
-    if (!router) {
-        debug(&apos;no routes defined on app&apos;);
-        done();
-        return;
-    }
-
-    router.handle(req, res, done);
-};
-</code></pre><p>该方法的作用是将res, res逐级分发到express应用每个路由中，以便执行各个路由相匹配的操作。<br>其实这个函数最关键的部分是在router.handle(req, res, done)这个方法的执行上，这是真正的路由分发执行操作，在./router/index.js里面定义，之后会对这部分进行分析讲解。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">app.handle = <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">req, res, callback</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> router = <span class="keyword">this</span>._router;</div><div class="line"></div><div class="line">	<span class="comment">// final handler</span></div><div class="line">	<span class="keyword">var</span> done = callback || finalhandler(req, res, &#123;</div><div class="line">		<span class="attr">env</span>: <span class="keyword">this</span>.get(<span class="string">'env'</span>),</div><div class="line">		<span class="attr">onerror</span>: logerror.bind(<span class="keyword">this</span>)</div><div class="line">	&#125;);</div><div class="line"></div><div class="line">	<span class="comment">// no routes</span></div><div class="line">	<span class="keyword">if</span> (!router) &#123;</div><div class="line">		debug(<span class="string">'no routes defined on app'</span>);</div><div class="line">		done();</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	router.handle(req, res, done);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>该方法的作用是将res, res逐级分发到express应用每个路由中，以便执行各个路由相匹配的操作。<br>其实这个函数最关键的部分是在router.handle(req, res, done)这个方法的执行上，这是真正的路由分发执行操作，在./router/index.js里面定义，之后会对这部分进行分析讲解。</p>
 <p>接着createApplication里的操作。在定义了app之后，执行了两个<code>mixin</code>方法，分别将 <code>EventEmitter</code> 和 <code>./application.js</code> 中的属性和方法合并到<code>app</code>之中。</p>
 <p>在 mixin 之后，createApplicaion 又使用了对象字面量的定义方法，定义了<code>app.request</code>和<code>app.response</code>对象，分别以 <code>./request.js</code> 和 <code>./response.js</code>为原型对象，并赋值app属性且指向app本身(这里是为了在之后的response对象或request对象中，能够使用this.app访问已经创建的express实例)。</p>
 <p>然后就是执行<code>app.init()</code>，这个<code>init()</code>方法也是在<code>./application.js</code>中定义的，用来初始化express应用的设置</p>
-<pre><code>app.init = function init() {
-    this.cache = {};
-    this.engines = {};
-    this.settings = {};
-
-    this.defaultConfiguration();
-};
-</code></pre><p>在createApplicaion的最后返回组建好的<code>app</code>对象。</p>
-<p>在createApplicaion之后，便是一些公共API的导出：</p>
-<pre><code>exports.application = proto;
-exports.request = req;
-exports.response = res;
-
-/**
-* Expose constructors.
-*/
-
-exports.Route = Route;
-exports.Router = Router;
-
-/**
-* Expose middleware
-*/
-
-exports.query = require(&apos;./middleware/query&apos;);
-exports.static = require(&apos;serve-static&apos;);
-</code></pre><p>对于这些公共api模块的功能和作用也不多说了，express的文档有相应的说明。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">app.init = <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">this</span>.cache = &#123;&#125;;</div><div class="line">	<span class="keyword">this</span>.engines = &#123;&#125;;</div><div class="line">	<span class="keyword">this</span>.settings = &#123;&#125;;</div><div class="line"></div><div class="line">	<span class="keyword">this</span>.defaultConfiguration();</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在createApplicaion的最后返回组建好的<code>app</code>对象。</p>
+<p>在createApplicaion之后，便是一些公共API的导出：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">exports.application = proto;</div><div class="line">exports.request = req;</div><div class="line">exports.response = res;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* Expose constructors.</div><div class="line">*/</div><div class="line"></div><div class="line">exports.Route = Route;</div><div class="line">exports.Router = Router;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">* Expose middleware</div><div class="line">*/</div><div class="line"></div><div class="line">exports.query = <span class="built_in">require</span>(<span class="string">'./middleware/query'</span>);</div><div class="line">exports.static = <span class="built_in">require</span>(<span class="string">'serve-static'</span>);</div></pre></td></tr></table></figure></p>
+<p>对于这些公共api模块的功能和作用也不多说了，express的文档有相应的说明。</p>
 <p>在<code>./express.js</code>的最后，遍历了一个数组：</p>
-<pre><code>[
-    &apos;json&apos;,
-    &apos;urlencoded&apos;,
-    &apos;bodyParser&apos;,
-    &apos;compress&apos;,
-    &apos;cookieSession&apos;,
-    &apos;session&apos;,
-    &apos;logger&apos;,
-    &apos;cookieParser&apos;,
-    &apos;favicon&apos;,
-    &apos;responseTime&apos;,
-    &apos;errorHandler&apos;,
-    &apos;timeout&apos;,
-    &apos;methodOverride&apos;,
-    &apos;vhost&apos;,
-    &apos;csrf&apos;,
-    &apos;directory&apos;,
-    &apos;limit&apos;,
-    &apos;multipart&apos;,
-    &apos;staticCache&apos;,
-].forEach(function (name) {
-    Object.defineProperty(exports, name, {
-        get: function () {
-            throw new Error(&apos;Most middleware (like &apos; + name + &apos;) is no longer bundled with Express and must be installed separately. Please see https://github.com/senchalabs/connect#middleware.&apos;);
-        },
-        configurable: true
-    });
-});
-</code></pre><p>这是因为express 4.x之后，很多中间件依赖没有在express内部导入了，但是express有时会用到这些中间件，这里是一个中间件检测，告诉开发者数组内的中间件需要从外部install进来。</p>
-<h3 id="router"><a href="#router" class="headerlink" title="router"></a>router</h3><p>./router文件夹下包括三个文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[</div><div class="line">	<span class="string">'json'</span>,</div><div class="line">	<span class="string">'urlencoded'</span>,</div><div class="line">	<span class="string">'bodyParser'</span>,</div><div class="line">	<span class="string">'compress'</span>,</div><div class="line">	<span class="string">'cookieSession'</span>,</div><div class="line">	<span class="string">'session'</span>,</div><div class="line">	<span class="string">'logger'</span>,</div><div class="line">	<span class="string">'cookieParser'</span>,</div><div class="line">	<span class="string">'favicon'</span>,</div><div class="line">	<span class="string">'responseTime'</span>,</div><div class="line">	<span class="string">'errorHandler'</span>,</div><div class="line">	<span class="string">'timeout'</span>,</div><div class="line">	<span class="string">'methodOverride'</span>,</div><div class="line">	<span class="string">'vhost'</span>,</div><div class="line">	<span class="string">'csrf'</span>,</div><div class="line">	<span class="string">'directory'</span>,</div><div class="line">	<span class="string">'limit'</span>,</div><div class="line">	<span class="string">'multipart'</span>,</div><div class="line">	<span class="string">'staticCache'</span>,</div><div class="line">].forEach(<span class="function"><span class="keyword">function</span> (<span class="params">name</span>) </span>&#123;</div><div class="line">	<span class="built_in">Object</span>.defineProperty(exports, name, &#123;</div><div class="line">		<span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Most middleware (like '</span> + name + <span class="string">') is no longer bundled with Express and must be installed separately. Please see https://github.com/senchalabs/connect#middleware.'</span>);</div><div class="line">		&#125;,</div><div class="line">		<span class="attr">configurable</span>: <span class="literal">true</span></div><div class="line">	&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这是因为express 4.x之后，很多中间件依赖没有在express内部导入了，但是express有时会用到这些中间件，这里是一个中间件检测，告诉开发者数组内的中间件需要从外部install进来。</p>
+<h2 id="router"><a href="#router" class="headerlink" title="router"></a>router</h2><p>./router文件夹下包括三个文件：</p>
 <ul>
 <li><code>layer.js</code>：定义中间件的基本数据结构</li>
 <li><code>route.js</code>：定义express的路由中间件Route;</li>
@@ -224,419 +110,54 @@ exports.static = require(&apos;serve-static&apos;);
 <blockquote>
 <p><code>Router</code> 和 <code>Route</code> 的区别：Router可以看作是一个中间件容器，不仅可以存放路由中间件（Route），还可以存放其他中间件；而Route仅仅是路由中间件，封装了路由信息。<br>Router和Route都各自维护了一个stack数组，该数组就是用来存放中间件和路由的。</p>
 </blockquote>
-<h4 id="layer-js"><a href="#layer-js" class="headerlink" title="layer.js"></a>layer.js</h4><p>首先来看layer.js中对于中间件的初始定义：</p>
-<pre><code>var pathRegexp = require(&apos;path-to-regxp&apos;);
-
-function Layer(path, options, fn) {
-    if (!(this instanceof Layer)) {
-        return new Layer(path, options, fn)
-    }
-
-    debug(&apos;new %s&apos;, path);
-    var opts = options || {};
-
-    this.handle = fn;
-    this.name = fn.name || &apos;&lt;anonymous&gt;&apos;;
-    this.params = undefined;
-    this.path = undefined;
-    this.regexp = pathRegexp(path, this.keys = [], opts);
-
-    if (path === &apos;/&apos; &amp;&amp; opts.end === false) {
-        this.regexp.fast_slash = true;
-    }
-}
-</code></pre><p><code>path</code>参数不用多说，就是传入的url字符串，这里使用了<code>path-to-regexp</code>这个库，用来匹配url字符串，<code>options</code>是<code>path-to-regexp</code>需要的配置参数，即为 {sensitive: Boolean, stric: Boolean, end: Boolean}。npm上有该库的详细使用说明，这里就不再讲解了。<br><code>fn</code>也就是中间件里的回调处理函数，在Layer初始化的时候将它赋值给了自己的<code>handle</code>属性。</p>
+<h3 id="layer-js"><a href="#layer-js" class="headerlink" title="layer.js"></a>layer.js</h3><p>首先来看layer.js中对于中间件的初始定义：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pathRegexp = <span class="built_in">require</span>(<span class="string">'path-to-regxp'</span>);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Layer</span>(<span class="params">path, options, fn</span>) </span>&#123;</div><div class="line">	<span class="keyword">if</span> (!(<span class="keyword">this</span> <span class="keyword">instanceof</span> Layer)) &#123;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">new</span> Layer(path, options, fn)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	debug(<span class="string">'new %s'</span>, path);</div><div class="line">	<span class="keyword">var</span> opts = options || &#123;&#125;;</div><div class="line"></div><div class="line">	<span class="keyword">this</span>.handle = fn;</div><div class="line">	<span class="keyword">this</span>.name = fn.name || <span class="string">'&lt;anonymous&gt;'</span>;</div><div class="line">	<span class="keyword">this</span>.params = <span class="literal">undefined</span>;</div><div class="line">	<span class="keyword">this</span>.path = <span class="literal">undefined</span>;</div><div class="line">	<span class="keyword">this</span>.regexp = pathRegexp(path, <span class="keyword">this</span>.keys = [], opts);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (path === <span class="string">'/'</span> &amp;&amp; opts.end === <span class="literal">false</span>) &#123;</div><div class="line">		<span class="keyword">this</span>.regexp.fast_slash = <span class="literal">true</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>path</code>参数不用多说，就是传入的url字符串，这里使用了<code>path-to-regexp</code>这个库，用来匹配url字符串，<code>options</code>是<code>path-to-regexp</code>需要的配置参数，即为 {sensitive: Boolean, stric: Boolean, end: Boolean}。npm上有该库的详细使用说明，这里就不再讲解了。<br><code>fn</code>也就是中间件里的回调处理函数，在Layer初始化的时候将它赋值给了自己的<code>handle</code>属性。</p>
 <p>之后Layer还定义了三个操作方法：<code>handle_error</code>, <code>handle_request</code>, <code>match</code>。</p>
 <p><code>handle_error</code>就是定义的express应用中的错误处理部分，例如app.use(fuction(err, req, res, next){})最后就会执行到这里。<br><code>handle_request</code>定义的就是express应用中的路由中间件请求处理函数，也就是例如app.get(‘/test’, function(req, res, next){})的操作最后的执行位置。<br><code>match</code>定义的是匹配<code>path</code>参数的操作，使用<code>path-to-regexp</code>的操作方法，例如在请求过程中<code>/foo/23</code>与就会和之前定义的<code>/foo/:id</code>相匹配，并最终将对应的<code>23</code>赋值<code>req.params.id</code>，这一部分的操作需要结合<code>path-to-regexp</code>的操作方法去了解。</p>
 <p>整个Layer的定义其实并不复杂，它定义了中间件的基本数据结构，是后面Router和Route对象实现的基础。</p>
-<h4 id="route-js"><a href="#route-js" class="headerlink" title="route.js"></a>route.js</h4><p>同样，先从Route对象的初始化入手：</p>
-<pre><code>function Route(path) {
-    this.path = path;
-    this.stack = [];
-
-    debug(&apos;new %s&apos;, path);
-
-    this.methods = {};
-}
-</code></pre><p><code>path</code>参数不用多说，<code>stack</code>是一个存放layer组件的数组，<code>methods</code>是存放HTTP方法的Object，例如{‘get’: true, ‘post’: true}，即表示该Route中间件只能接受get和post方法。</p>
+<h3 id="route-js"><a href="#route-js" class="headerlink" title="route.js"></a>route.js</h3><p>同样，先从Route对象的初始化入手：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Route</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">	<span class="keyword">this</span>.path = path;</div><div class="line">	<span class="keyword">this</span>.stack = [];</div><div class="line"></div><div class="line">	debug(<span class="string">'new %s'</span>, path);</div><div class="line"></div><div class="line">	<span class="keyword">this</span>.methods = &#123;&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>path</code>参数不用多说，<code>stack</code>是一个存放layer组件的数组，<code>methods</code>是存放HTTP方法的Object，例如{‘get’: true, ‘post’: true}，即表示该Route中间件只能接受get和post方法。</p>
 <p>紧接着Route通过原型链的方式定义了两个与<code>methods</code>紧密相关的方法：</p>
 <ul>
 <li>_handles_method: 判断Route对象中是否存在method(传入参数)方法，并且如果method值为<code>head</code>，当作get方法处理；</li>
 <li>_options：返回Route对象的methods值，并且如果存在<code>get</code>，则再添加一个<code>head</code>值。</li>
 </ul>
 <p>然后就是比较重要的部分，中间件的派发操作：</p>
-<pre><code>Route.prototype.dispatch = function dispatch(req, res, done) {
-    var idx = 0;
-    var stack = this.stack;
-    if (stack.length === 0) {
-        return done();
-    }
-
-    var method = req.method.toLowerCase();
-    if (method === &apos;head&apos; &amp;&amp; !this.methods[&apos;head&apos;]) {
-        method = &apos;get&apos;;
-    }
-
-    req.route = this;
-
-    next();
-
-    function next(err) {
-        if (err &amp;&amp; err === &apos;route&apos;) {
-            return done();
-        }
-
-        var layer = stack[idx++];
-        if (!layer) {
-            return done(err);
-        }
-
-        if (layer.method &amp;&amp; layer.method !== method) {
-            return next(err);
-        }
-
-        if (err) {
-            layer.handle_error(err, req, res, next);
-        } else {
-            layer.handle_request(req, res, next);
-        }
-    }
-};
-</code></pre><p>在知道了<code>layer</code>和<code>stack</code>这两个事物的基础上，这个函数的操作流程就很好理解了，其实就是通过函数递归的方法，对Route对象的<code>stack</code>按插入顺序进行遍历，然后依次执行<code>stack</code>里的<code>layer</code>的过程。<br>当然，首先<code>req.method</code>也就是请求的http方法必须在Route对象中的methods之中。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">Route.prototype.dispatch = <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span>(<span class="params">req, res, done</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> idx = <span class="number">0</span>;</div><div class="line">	<span class="keyword">var</span> stack = <span class="keyword">this</span>.stack;</div><div class="line">	<span class="keyword">if</span> (stack.length === <span class="number">0</span>) &#123;</div><div class="line">		<span class="keyword">return</span> done();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">var</span> method = req.method.toLowerCase();</div><div class="line">	<span class="keyword">if</span> (method === <span class="string">'head'</span> &amp;&amp; !<span class="keyword">this</span>.methods[<span class="string">'head'</span>]) &#123;</div><div class="line">		method = <span class="string">'get'</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	req.route = <span class="keyword">this</span>;</div><div class="line"></div><div class="line">	next();</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">		<span class="keyword">if</span> (err &amp;&amp; err === <span class="string">'route'</span>) &#123;</div><div class="line">			<span class="keyword">return</span> done();</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">var</span> layer = stack[idx++];</div><div class="line">		<span class="keyword">if</span> (!layer) &#123;</div><div class="line">			<span class="keyword">return</span> done(err);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (layer.method &amp;&amp; layer.method !== method) &#123;</div><div class="line">			<span class="keyword">return</span> next(err);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (err) &#123;</div><div class="line">			layer.handle_error(err, req, res, next);</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			layer.handle_request(req, res, next);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>在知道了<code>layer</code>和<code>stack</code>这两个事物的基础上，这个函数的操作流程就很好理解了，其实就是通过函数递归的方法，对Route对象的<code>stack</code>按插入顺序进行遍历，然后依次执行<code>stack</code>里的<code>layer</code>的过程。<br>当然，首先<code>req.method</code>也就是请求的http方法必须在Route对象中的methods之中。</p>
 <p>最后就是定义如何调用Route对应的HTTP方法,也就是<code>router.get</code>,<code>router.post</code>等最终执行的地方</p>
-<pre><code>Route.prototype.all = function all() {
-    var handles = flatten(slice.call(arguments));
-
-    for (var i = 0; i &lt; handles.length; i++) {
-        var handle = handles[i];
-
-        if (typeof handle !== &apos;function&apos;) {
-            var type = toString.call(handle);
-            var msg = &apos;Route.all() requires callback functions but got a &apos; + type;
-            throw new TypeError(msg);
-        }
-
-        var layer = Layer(&apos;/&apos;, {}, handle);
-        layer.method = undefined;
-
-        this.methods._all = true;
-        this.stack.push(layer);
-    }
-
-    return this;
-};
-
-methods.forEach(function(method){
-    Route.prototype[method] = function(){
-        var handles = flatten(slice.call(arguments));
-
-        for (var i = 0; i &lt; handles.length; i++) {
-            var handle = handles[i];
-
-            if (typeof handle !== &apos;function&apos;) {
-                var type = toString.call(handle);
-                var msg = &apos;Route.&apos; + method + &apos;() requires callback functions but got a &apos; + type;
-                throw new Error(msg);
-            }
-
-            debug(&apos;%s %s&apos;, method, this.path);
-
-            var layer = Layer(&apos;/&apos;, {}, handle);
-            layer.method = method;
-
-            this.methods[method] = true;
-            this.stack.push(layer);
-        }
-
-        return this;
-    };
-});
-</code></pre><p>两个代码块一个是定义了<code>Route.all</code>,一个是通过遍历<code>methods</code>(require(‘methods’)，存储了各种HTTP请求方法)将其中的元素赋值到成Route对象的属性，也就有了<code>Route.get</code>,<code>Route.post</code>等方法。<br>其实这两个代码块其中的执行流程都大同小异。<br>在这里需要注意的是定义<code>Route.method</code>(这里method指代all,get,post等)时，其中第一行代码</p>
-<pre><code>var handles = flatten(slice.call(arguments))
-</code></pre><p>这里的handles就是app.get(‘/path’, fn1, fn2, fn3)中的<code>fn1</code>,<code>fn2</code>,<code>fn3</code>等，也就是中间件的回调函数。<br>但是如果这样使用，有人会问不应该是slice.call(arguments, 1)，也就是从第二个参数开始截取吗？(slice 是 Array.prototype.slice，在route.js开头定义的)<br>刚开始看到这里的时候，笔者也有这个疑问，后来在index.js里面，也就是定义Router对象的地方，找到这么一段代码：</p>
-<pre><code>proto.route = function route(path) {
-    var route = new Route(path);
-
-    var layer = new Layer(path, {
-        sensitive: this.caseSensitive,
-        strict: this.strict,
-        end: true
-    }, route.dispatch.bind(route));
-
-    layer.route = route;
-
-    this.stack.push(layer);
-    return route;
-};
-
-// create Router#VERB functions
-methods.concat(&apos;all&apos;).forEach(function(method){
-    proto[method] = function(path){
-        var route = this.route(path)
-        route[method].apply(route, slice.call(arguments, 1));
-        return this;
-    };
-});
-</code></pre><p>这里可以看出Route是被放在了Router的<code>stack</code>里的<code>layer.route</code>，然后在调用类似Router[method](path, fn1, fn2)的时候，已经将其中path提取出来，并且直接通过调用<code>this.route(path)</code>赋值到<code>Route</code>中的<code>path</code>属性，之后将<code>fn1</code>,<code>fn2</code>通过<code>slice.call(arguments,1)</code>的方式截取出来，使用route[method].apply调用到Route.method方法。<br>所以在Route.method调用的时候，其arguments已经是回调函数<code>fn1</code>，<code>fn2</code>等的数组了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">Route.prototype.all = <span class="function"><span class="keyword">function</span> <span class="title">all</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> handles = flatten(slice.call(<span class="built_in">arguments</span>));</div><div class="line"></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; handles.length; i++) &#123;</div><div class="line">		<span class="keyword">var</span> handle = handles[i];</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> handle !== <span class="string">'function'</span>) &#123;</div><div class="line">			<span class="keyword">var</span> type = toString.call(handle);</div><div class="line">			<span class="keyword">var</span> msg = <span class="string">'Route.all() requires callback functions but got a '</span> + type;</div><div class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(msg);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">var</span> layer = Layer(<span class="string">'/'</span>, &#123;&#125;, handle);</div><div class="line">		layer.method = <span class="literal">undefined</span>;</div><div class="line"></div><div class="line">		<span class="keyword">this</span>.methods._all = <span class="literal">true</span>;</div><div class="line">		<span class="keyword">this</span>.stack.push(layer);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">methods.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">method</span>)</span>&#123;</div><div class="line">	Route.prototype[method] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">		<span class="keyword">var</span> handles = flatten(slice.call(<span class="built_in">arguments</span>));</div><div class="line"></div><div class="line">		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; handles.length; i++) &#123;</div><div class="line">			<span class="keyword">var</span> handle = handles[i];</div><div class="line"></div><div class="line">			<span class="keyword">if</span> (<span class="keyword">typeof</span> handle !== <span class="string">'function'</span>) &#123;</div><div class="line">				<span class="keyword">var</span> type = toString.call(handle);</div><div class="line">				<span class="keyword">var</span> msg = <span class="string">'Route.'</span> + method + <span class="string">'() requires callback functions but got a '</span> + type;</div><div class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(msg);</div><div class="line">			&#125;</div><div class="line"></div><div class="line">			debug(<span class="string">'%s %s'</span>, method, <span class="keyword">this</span>.path);</div><div class="line"></div><div class="line">			<span class="keyword">var</span> layer = Layer(<span class="string">'/'</span>, &#123;&#125;, handle);</div><div class="line">			layer.method = method;</div><div class="line"></div><div class="line">			<span class="keyword">this</span>.methods[method] = <span class="literal">true</span>;</div><div class="line">			<span class="keyword">this</span>.stack.push(layer);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">	&#125;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>两个代码块一个是定义了<code>Route.all</code>,一个是通过遍历<code>methods</code>(require(‘methods’)，存储了各种HTTP请求方法)将其中的元素赋值到成Route对象的属性，也就有了<code>Route.get</code>,<code>Route.post</code>等方法。<br>其实这两个代码块其中的执行流程都大同小异。<br>在这里需要注意的是定义<code>Route.method</code>(这里method指代all,get,post等)时，其中第一行代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> handles = flatten(slice.call(<span class="built_in">arguments</span>));</div></pre></td></tr></table></figure>
+<p>这里的handles就是app.get(‘/path’, fn1, fn2, fn3)中的<code>fn1</code>,<code>fn2</code>,<code>fn3</code>等，也就是中间件的回调函数。<br>但是如果这样使用，有人会问不应该是slice.call(arguments, 1)，也就是从第二个参数开始截取吗？(slice 是 Array.prototype.slice，在route.js开头定义的)<br>刚开始看到这里的时候，笔者也有这个疑问，后来在index.js里面，也就是定义Router对象的地方，找到这么一段代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">proto.route = <span class="function"><span class="keyword">function</span> <span class="title">route</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> route = <span class="keyword">new</span> Route(path);</div><div class="line"></div><div class="line">	<span class="keyword">var</span> layer = <span class="keyword">new</span> Layer(path, &#123;</div><div class="line">		<span class="attr">sensitive</span>: <span class="keyword">this</span>.caseSensitive,</div><div class="line">		<span class="attr">strict</span>: <span class="keyword">this</span>.strict,</div><div class="line">		<span class="attr">end</span>: <span class="literal">true</span></div><div class="line">	&#125;, route.dispatch.bind(route));</div><div class="line"></div><div class="line">	layer.route = route;</div><div class="line"></div><div class="line">	<span class="keyword">this</span>.stack.push(layer);</div><div class="line">	<span class="keyword">return</span> route;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">// create Router#VERB functions</span></div><div class="line">methods.concat(<span class="string">'all'</span>).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">method</span>)</span>&#123;</div><div class="line">	proto[method] = <span class="function"><span class="keyword">function</span>(<span class="params">path</span>)</span>&#123;</div><div class="line">		<span class="keyword">var</span> route = <span class="keyword">this</span>.route(path)</div><div class="line">		route[method].apply(route, slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>));</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">	&#125;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这里可以看出Route是被放在了Router的<code>stack</code>里的<code>layer.route</code>，然后在调用类似Router[method](path, fn1, fn2)的时候，已经将其中path提取出来，并且直接通过调用<code>this.route(path)</code>赋值到<code>Route</code>中的<code>path</code>属性，之后将<code>fn1</code>,<code>fn2</code>通过<code>slice.call(arguments,1)</code>的方式截取出来，使用route[method].apply调用到Route.method方法。<br>所以在Route.method调用的时候，其arguments已经是回调函数<code>fn1</code>，<code>fn2</code>等的数组了。</p>
 <p>OK，解决了这个疑问，继续下一个重点，可以看见在Route.method的定义中，最终都返回了<code>this</code>，加上之前对于arguments的处理，就形成了路由中间件的灵活调用方法：</p>
-<pre><code>router.get(&apos;/path&apos;, fn1, fn2, fn3);
-
-router.get(&apos;/path&apos;, [fn1, [fn2, [fn3]]]);
-
-router.get(&apos;/path&apos;, fn1).get(&apos;/path&apos;, fn2).get(&apos;/path&apos;, fn3)
-</code></pre><p>这三个最终实现的结果是一样的，第一个和第二个没有什么区别，第三个有些许不一样，第一个和第二个在Router中’fn1,fn2,fn3’都是在同一个layer.route之中，而第三个则是在不同的layer.route之中。<br>第一个和第二个是通过遍历Route的stack来找到fn进行执行，而第三个是遍历Router的stack来找到fn进行执行。简单来说就是一个放在外层的stack，一个放在内层的stack。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">router.get(<span class="string">'/path'</span>, fn1, fn2, fn3);</div><div class="line"></div><div class="line">router.get(<span class="string">'/path'</span>, [fn1, [fn2, [fn3]]]);</div><div class="line"></div><div class="line">router.get(<span class="string">'/path'</span>, fn1).get(<span class="string">'/path'</span>, fn2).get(<span class="string">'/path'</span>, fn3);</div></pre></td></tr></table></figure>
+<p>这三个最终实现的结果是一样的，第一个和第二个没有什么区别，第三个有些许不一样，第一个和第二个在Router中’fn1,fn2,fn3’都是在同一个layer.route之中，而第三个则是在不同的layer.route之中。<br>第一个和第二个是通过遍历Route的stack来找到fn进行执行，而第三个是遍历Router的stack来找到fn进行执行。简单来说就是一个放在外层的stack，一个放在内层的stack。</p>
 <p>其实在route.js这部分必须要结合index.js来看，不然对于一些实现方法不是很好理解。</p>
-<h4 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h4><p>老规矩，还是先从导出对象的基本定义开始。</p>
-<pre><code>var proto = module.exports = function(options) {
-    var opts = options || {};
-
-    function router(req, res, next) {
-        router.handle(req, res, next);
-    }
-
-    // mixin Router class functions
-    router.__proto__ = proto;
-
-    router.params = {};
-    router._params = [];
-    router.caseSensitive = opts.caseSensitive;
-    router.mergeParams = opts.mergeParams;
-    router.strict = opts.strict;
-    router.stack = [];
-
-    return router;
-};
-</code></pre><p>这里的初始化定义应该不难看懂，options参数就是<code>pathRegexp</code>要求的三个配置参数<code>caseSensitive</code>,<code>mergeParams</code>,<code>strict</code>。<br><code>router.stack</code>前面也解释得比较多了，这里也不再赘述。<code>router.params</code>和<code>router._params</code>是定义app.params(param, fn)中会使用到存储对象。<br>需要注意的是Router最终返回的是 <code>router.handle(req,res,next)</code>的执行函数，<code>router.handle</code>是定义的Router中的路由派发操作，类似Route.dispatch，之后这里会详细解释。</p>
+<h3 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h3><p>老规矩，还是先从导出对象的基本定义开始。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> proto = <span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">options</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> opts = options || &#123;&#125;;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">router</span>(<span class="params">req, res, next</span>) </span>&#123;</div><div class="line">		router.handle(req, res, next);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// mixin Router class functions</span></div><div class="line">  setPrototypeOf(router, proto);</div><div class="line"></div><div class="line">	router.params = &#123;&#125;;</div><div class="line">	router._params = [];</div><div class="line">	router.caseSensitive = opts.caseSensitive;</div><div class="line">	router.mergeParams = opts.mergeParams;</div><div class="line">	router.strict = opts.strict;</div><div class="line">	router.stack = [];</div><div class="line"></div><div class="line">	<span class="keyword">return</span> router;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这里的初始化定义应该不难看懂，options参数就是<code>pathRegexp</code>要求的三个配置参数<code>caseSensitive</code>,<code>mergeParams</code>,<code>strict</code>。<br><code>router.stack</code>前面也解释得比较多了，这里也不再赘述。<code>router.params</code>和<code>router._params</code>是定义app.params(param, fn)中会使用到存储对象。<br>需要注意的是Router最终返回的是 <code>router.handle(req,res,next)</code>的执行函数，<code>router.handle</code>是定义的Router中的路由派发操作，类似Route.dispatch，之后这里会详细解释。</p>
 <p>在这之后在Router对象上定义了param(name, fn)方法，这其实就是app.param(name, fn)定义的部分，这部分会在appliction.js绑定到app.param上，也就成了express文档里的app.param。这部分没有什么难以理解的地方，结合文档看基本可以理解，所以这里就跳过proto.param(name, fn)。</p>
 <p>之后就是在Router的初始化里提到过的router.handle的定义：</p>
-<pre><code>proto.handle = function handle(req, res, out) {
-    var self = this;
-
-    debug(&apos;dispatching %s %s&apos;, req.method, req.url);
-
-    var search = 1 + req.url.indexOf(&apos;?&apos;);
-    var pathlength = search ? search - 1 : req.url.length;
-    var fqdn = req.url[0] !== &apos;/&apos; &amp;&amp; 1 + req.url.substr(0, pathlength).indexOf(&apos;://&apos;);
-    var protohost = fqdn ? req.url.substr(0, req.url.indexOf(&apos;/&apos;, 2 + fqdn)) : &apos;&apos;;
-    var idx = 0;
-    var removed = &apos;&apos;;
-    var slashAdded = false;
-    var paramcalled = {};
-
-    // store options for OPTIONS request
-    // only used if OPTIONS request
-    var options = [];
-
-    // middleware and routes
-    var stack = self.stack;
-
-    // manage inter-router variables
-    var parentParams = req.params;
-    var parentUrl = req.baseUrl || &apos;&apos;;
-    var done = restore(out, req, &apos;baseUrl&apos;, &apos;next&apos;, &apos;params&apos;);
-
-    // setup next layer
-    req.next = next;
-
-    // for options requests, respond with a default if nothing else responds
-    if (req.method === &apos;OPTIONS&apos;) {
-        done = wrap(done, function(old, err) {
-            if (err || options.length === 0) return old(err);
-            sendOptionsResponse(res, options, old);
-        });
-    }
-
-    // setup basic req values
-    req.baseUrl = parentUrl;
-    req.originalUrl = req.originalUrl || req.url;
-
-    next();
-
-    function next(err) {
-        /**next 定义，暂时省略 **/
-    }
-
-    function trim_prefix(layer, layerError, layerPath, path) {
-        /**暂时省略 **/
-    }
-}
-</code></pre><p>因为这部分加上内部定义的函数的话，代码量比较多，一下贴出来不太容易理清思路，所以先将<code>next</code>和<code>trim_prefix</code>函数省略(<code>trim_prefix</code>是在<code>next</code>内部调用的)，先看看handle大概做了一件什么事情。<br>之前也说过<code>router.handle</code>是派发req和res到每个路由中间件的操作，联系之前提到的Route中的<code>dispatch</code>方法是通过函数调用的方法来遍历<code>stack</code>的中间件实现的req和res的派发，所以这里也是用了同样的操作：“通过递归调用<code>next</code>来实现路由派发”。<br>但是在调用next()之前，<code>router.handle</code>对<code>req.url</code>也就是原始的url进行了处理，把请求协议和search参数以及host都提取了出来，所以可以理解为在派发路由前，先对url做了一个预处理操作。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">proto.handle = <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">req, res, out</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> self = <span class="keyword">this</span>;</div><div class="line"></div><div class="line">	debug(<span class="string">'dispatching %s %s'</span>, req.method, req.url);</div><div class="line"></div><div class="line">	<span class="keyword">var</span> search = <span class="number">1</span> + req.url.indexOf(<span class="string">'?'</span>);</div><div class="line">	<span class="keyword">var</span> pathlength = search ? search - <span class="number">1</span> : req.url.length;</div><div class="line">	<span class="keyword">var</span> fqdn = req.url[<span class="number">0</span>] !== <span class="string">'/'</span> &amp;&amp; <span class="number">1</span> + req.url.substr(<span class="number">0</span>, pathlength).indexOf(<span class="string">'://'</span>);</div><div class="line">	<span class="keyword">var</span> protohost = fqdn ? req.url.substr(<span class="number">0</span>, req.url.indexOf(<span class="string">'/'</span>, <span class="number">2</span> + fqdn)) : <span class="string">''</span>;</div><div class="line">	<span class="keyword">var</span> idx = <span class="number">0</span>;</div><div class="line">	<span class="keyword">var</span> removed = <span class="string">''</span>;</div><div class="line">	<span class="keyword">var</span> slashAdded = <span class="literal">false</span>;</div><div class="line">	<span class="keyword">var</span> paramcalled = &#123;&#125;;</div><div class="line"></div><div class="line">	<span class="comment">// store options for OPTIONS request</span></div><div class="line">	<span class="comment">// only used if OPTIONS request</span></div><div class="line">	<span class="keyword">var</span> options = [];</div><div class="line"></div><div class="line">	<span class="comment">// middleware and routes</span></div><div class="line">	<span class="keyword">var</span> stack = self.stack;</div><div class="line"></div><div class="line">	<span class="comment">// manage inter-router variables</span></div><div class="line">	<span class="keyword">var</span> parentParams = req.params;</div><div class="line">	<span class="keyword">var</span> parentUrl = req.baseUrl || <span class="string">''</span>;</div><div class="line">	<span class="keyword">var</span> done = restore(out, req, <span class="string">'baseUrl'</span>, <span class="string">'next'</span>, <span class="string">'params'</span>);</div><div class="line"></div><div class="line">	<span class="comment">// setup next layer</span></div><div class="line">	req.next = next;</div><div class="line"></div><div class="line">	<span class="comment">// for options requests, respond with a default if nothing else responds</span></div><div class="line">	<span class="keyword">if</span> (req.method === <span class="string">'OPTIONS'</span>) &#123;</div><div class="line">		done = wrap(done, <span class="function"><span class="keyword">function</span>(<span class="params">old, err</span>) </span>&#123;</div><div class="line">			<span class="keyword">if</span> (err || options.length === <span class="number">0</span>) <span class="keyword">return</span> old(err);</div><div class="line">			sendOptionsResponse(res, options, old);</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// setup basic req values</span></div><div class="line">	req.baseUrl = parentUrl;</div><div class="line">	req.originalUrl = req.originalUrl || req.url;</div><div class="line"></div><div class="line">	next();</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">		<span class="comment">/**next 定义，暂时省略 **/</span></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">trim_prefix</span>(<span class="params">layer, layerError, layerPath, path</span>) </span>&#123;</div><div class="line">		<span class="comment">/**暂时省略 **/</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为这部分加上内部定义的函数的话，代码量比较多，一下贴出来不太容易理清思路，所以先将<code>next</code>和<code>trim_prefix</code>函数省略(<code>trim_prefix</code>是在<code>next</code>内部调用的)，先看看handle大概做了一件什么事情。<br>之前也说过<code>router.handle</code>是派发req和res到每个路由中间件的操作，联系之前提到的Route中的<code>dispatch</code>方法是通过函数调用的方法来遍历<code>stack</code>的中间件实现的req和res的派发，所以这里也是用了同样的操作：“通过递归调用<code>next</code>来实现路由派发”。<br>但是在调用next()之前，<code>router.handle</code>对<code>req.url</code>也就是原始的url进行了处理，把请求协议和search参数以及host都提取了出来，所以可以理解为在派发路由前，先对url做了一个预处理操作。</p>
 <p>接下来就是仔细看一下看<code>next</code>函数是具体定义了一个怎么样的操作：</p>
-<pre><code>function next(err) {
-    var layerError = err === &apos;route&apos;
-        ? null
-        : err;
-
-    // remove added slash
-    if (slashAdded) {
-        req.url = req.url.substr(1);
-        slashAdded = false;
-    }
-
-    // restore altered req.url
-    if (removed.length !== 0) {
-        req.baseUrl = parentUrl;
-        req.url = protohost + removed + req.url.substr(protohost.length);
-        removed = &apos;&apos;;
-    }
-
-    // no more matching layers
-    if (idx &gt;= stack.length) {
-        setImmediate(done, layerError);
-        return;
-    }
-
-    // get pathname of request
-    var path = getPathname(req);
-
-    if (path == null) {
-        return done(layerError);
-    }
-
-    // find next matching layer
-    var layer;
-    var match;
-    var route;
-
-    while (match !== true &amp;&amp; idx &lt; stack.length) {
-        layer = stack[idx++];
-        match = matchLayer(layer, path);
-        route = layer.route;
-
-        if (typeof match !== &apos;boolean&apos;) {
-            // hold on to layerError
-            layerError = layerError || match;
-        }
-
-        if (match !== true) {
-            continue;
-        }
-
-        if (!route) {
-            // process non-route handlers normally
-            continue;
-        }
-
-        if (layerError) {
-            // routes do not match with a pending error
-            match = false;
-            continue;
-        }
-
-        var method = req.method;
-        var has_method = route._handles_method(method);
-
-        // build up automatic options response
-        if (!has_method &amp;&amp; method === &apos;OPTIONS&apos;) {
-            appendMethods(options, route._options());
-        }
-
-        // don&apos;t even bother matching route
-        if (!has_method &amp;&amp; method !== &apos;HEAD&apos;) {
-            match = false;
-            continue;
-        }
-    }
-
-    // no match
-    if (match !== true) {
-        return done(layerError);
-    }
-
-    // store route for dispatch on change
-    if (route) {
-        req.route = route;
-    }
-
-    // Capture one-time layer values
-    req.params = self.mergeParams
-        ? mergeParams(layer.params, parentParams)
-        : layer.params;
-    var layerPath = layer.path;
-
-    // this should be done for the layer
-    self.process_params(layer, paramcalled, req, res, function (err) {
-        if (err) {
-            return next(layerError || err);
-        }
-
-        if (route) {
-            return layer.handle_request(req, res, next);
-        }
-
-        trim_prefix(layer, layerError, layerPath, path);
-    });
-}
-</code></pre><p>在这里主要关注一下stack的遍历操作。在<code>next</code>之中stack的遍历先是通过while循环判断<code>match</code>值来确定是否找到匹配的<code>layer</code>, <code>match</code>是通过调用<code>matchLayer</code>返回结果，该方法定义为：</p>
-<pre><code>function matchLayer(layer, path) {
-    try {
-        return layer.match(path);
-    } catch(err) {
-        return err;
-    }
-}
-</code></pre><p>其实就是调用<code>layer.match</code>，只是加了个try catch而已。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> layerError = err === <span class="string">'route'</span></div><div class="line">		? <span class="literal">null</span></div><div class="line">		: err;</div><div class="line"></div><div class="line">	<span class="comment">// remove added slash</span></div><div class="line">	<span class="keyword">if</span> (slashAdded) &#123;</div><div class="line">		req.url = req.url.substr(<span class="number">1</span>);</div><div class="line">		slashAdded = <span class="literal">false</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// restore altered req.url</span></div><div class="line">	<span class="keyword">if</span> (removed.length !== <span class="number">0</span>) &#123;</div><div class="line">		req.baseUrl = parentUrl;</div><div class="line">		req.url = protohost + removed + req.url.substr(protohost.length);</div><div class="line">		removed = <span class="string">''</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// no more matching layers</span></div><div class="line">	<span class="keyword">if</span> (idx &gt;= stack.length) &#123;</div><div class="line">		setImmediate(done, layerError);</div><div class="line">		<span class="keyword">return</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// get pathname of request</span></div><div class="line">	<span class="keyword">var</span> path = getPathname(req);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (path == <span class="literal">null</span>) &#123;</div><div class="line">		<span class="keyword">return</span> done(layerError);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// find next matching layer</span></div><div class="line">	<span class="keyword">var</span> layer;</div><div class="line">	<span class="keyword">var</span> match;</div><div class="line">	<span class="keyword">var</span> route;</div><div class="line"></div><div class="line">	<span class="keyword">while</span> (match !== <span class="literal">true</span> &amp;&amp; idx &lt; stack.length) &#123;</div><div class="line">		layer = stack[idx++];</div><div class="line">		match = matchLayer(layer, path);</div><div class="line">		route = layer.route;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> match !== <span class="string">'boolean'</span>) &#123;</div><div class="line">			<span class="comment">// hold on to layerError</span></div><div class="line">			layerError = layerError || match;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (match !== <span class="literal">true</span>) &#123;</div><div class="line">			<span class="keyword">continue</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (!route) &#123;</div><div class="line">			<span class="comment">// process non-route handlers normally</span></div><div class="line">			<span class="keyword">continue</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (layerError) &#123;</div><div class="line">			<span class="comment">// routes do not match with a pending error</span></div><div class="line">			match = <span class="literal">false</span>;</div><div class="line">			<span class="keyword">continue</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">var</span> method = req.method;</div><div class="line">		<span class="keyword">var</span> has_method = route._handles_method(method);</div><div class="line"></div><div class="line">		<span class="comment">// build up automatic options response</span></div><div class="line">		<span class="keyword">if</span> (!has_method &amp;&amp; method === <span class="string">'OPTIONS'</span>) &#123;</div><div class="line">			appendMethods(options, route._options());</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="comment">// don't even bother matching route</span></div><div class="line">		<span class="keyword">if</span> (!has_method &amp;&amp; method !== <span class="string">'HEAD'</span>) &#123;</div><div class="line">			match = <span class="literal">false</span>;</div><div class="line">			<span class="keyword">continue</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// no match</span></div><div class="line">	<span class="keyword">if</span> (match !== <span class="literal">true</span>) &#123;</div><div class="line">		<span class="keyword">return</span> done(layerError);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// store route for dispatch on change</span></div><div class="line">	<span class="keyword">if</span> (route) &#123;</div><div class="line">		req.route = route;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// Capture one-time layer values</span></div><div class="line">	req.params = self.mergeParams</div><div class="line">		? mergeParams(layer.params, parentParams)</div><div class="line">		: layer.params;</div><div class="line">	<span class="keyword">var</span> layerPath = layer.path;</div><div class="line"></div><div class="line">	<span class="comment">// this should be done for the layer</span></div><div class="line">	self.process_params(layer, paramcalled, req, res, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</div><div class="line">		<span class="keyword">if</span> (err) &#123;</div><div class="line">			<span class="keyword">return</span> next(layerError || err);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (route) &#123;</div><div class="line">			<span class="keyword">return</span> layer.handle_request(req, res, next);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		trim_prefix(layer, layerError, layerPath, path);</div><div class="line">	&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这里主要关注一下stack的遍历操作。在<code>next</code>之中stack的遍历先是通过while循环判断<code>match</code>值来确定是否找到匹配的<code>layer</code>, <code>match</code>是通过调用<code>matchLayer</code>返回结果，该方法定义为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">matchLayer</span>(<span class="params">layer, path</span>) </span>&#123;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		<span class="keyword">return</span> layer.match(path);</div><div class="line">	&#125; <span class="keyword">catch</span>(err) &#123;</div><div class="line">		<span class="keyword">return</span> err;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实就是调用<code>layer.match</code>，只是加了个try catch而已。</p>
 <p>如果while循环如果找到了匹配的layer，那么会就会调用<code>proto.process_params</code>的方法，也就是self.process_params()这部操作；</p>
 <p><code>proto.process_params</code>的源码这里就不贴出来了，了解一下操作流程就好。这个方法需要对应<code>proto.param</code>来理解，其实就是<strong><em>查询并调用</em></strong><code>proto.param</code>里面<strong><em>定义且匹配的</em></strong>与<code>req.param</code>绑定的function，这些回调函数都是存储在<code>proto.params</code>里面的，所以这里就又会有一个通过函数递归的遍历操作。<br>在遍历完了之后就是调用</p>
-<pre><code>function (err) {
-        if (err) {
-            return next(layerError || err);
-        }
-
-        if (route) {
-            return layer.handle_request(req, res, next);
-        }
-
-        trim_prefix(layer, layerError, layerPath, path);
-}
-</code></pre><p>如果<code>layer.route</code>是存在的，结合之前分析的<code>Layer</code>和<code>Route</code>以及在Route的分析中提前提到这部分后面定义的<code>Router.route</code>，也就是：</p>
-<pre><code>proto.route = function route(path) {
-    var route = new Route(path);
-
-    var layer = new Layer(path, {
-        sensitive: this.caseSensitive,
-        strict: this.strict,
-        end: true
-    }, route.dispatch.bind(route));
-
-    layer.route = route;
-
-    this.stack.push(layer);
-    return route;
-};
-</code></pre><p><code>layer.handle_request</code>会执行<code>layer.route</code>的<code>dispatch</code>操作，也就是在Route中派发路由最终执行到在express中定义的对应的路由操作函数，之后又执行<code>next()</code>就又到了这里的<code>proto.stack</code>中的下一个遍历操作。<br>但是如果<code>layer.route</code>不存在，说明这只是一个中间件而不是路由中间件，也就是用<code>route.use</code>定义的中间件，所以就调用<code>trim_prefix</code>方法来执行路由中间件：</p>
-<pre><code>function trim_prefix(layer, layerError, layerPath, path) {
-    var c = path[layerPath.length];
-    if (c &amp;&amp; &apos;/&apos; !== c &amp;&amp; &apos;.&apos; !== c) return next(layerError);
-
-        // Trim off the part of the url that matches the route
-        // middleware (.use stuff) needs to have the path stripped
-    if (layerPath.length !== 0) {
-        debug(&apos;trim prefix (%s) from url %s&apos;, layerPath, req.url);
-        removed = layerPath;
-        req.url = protohost + req.url.substr(protohost.length + removed.length);
-
-        // Ensure leading slash
-        if (!fqdn &amp;&amp; req.url[0] !== &apos;/&apos;) {
-            req.url = &apos;/&apos; + req.url;
-            slashAdded = true;
-        }
-
-        // Setup base URL (no trailing slash)
-        req.baseUrl = parentUrl + (removed[removed.length - 1] === &apos;/&apos;
-            ? removed.substring(0, removed.length - 1)
-            : removed);
-    }
-
-    debug(&apos;%s %s : %s&apos;, layer.name, layerPath, req.originalUrl);
-
-    if (layerError) {
-        layer.handle_error(layerError, req, res, next);
-    } else {
-        layer.handle_request(req, res, next);
-    }
-}
-</code></pre><p>这个方法是在<code>proto.handle</code>里定义，和<code>next</code>同级。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</div><div class="line">		<span class="keyword">if</span> (err) &#123;</div><div class="line">			<span class="keyword">return</span> next(layerError || err);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="keyword">if</span> (route) &#123;</div><div class="line">			<span class="keyword">return</span> layer.handle_request(req, res, next);</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		trim_prefix(layer, layerError, layerPath, path);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果<code>layer.route</code>是存在的，结合之前分析的<code>Layer</code>和<code>Route</code>以及在Route的分析中提前提到这部分后面定义的<code>Router.route</code>，也就是：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">proto.route = <span class="function"><span class="keyword">function</span> <span class="title">route</span>(<span class="params">path</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> route = <span class="keyword">new</span> Route(path);</div><div class="line"></div><div class="line">	<span class="keyword">var</span> layer = <span class="keyword">new</span> Layer(path, &#123;</div><div class="line">		<span class="attr">sensitive</span>: <span class="keyword">this</span>.caseSensitive,</div><div class="line">		<span class="attr">strict</span>: <span class="keyword">this</span>.strict,</div><div class="line">		<span class="attr">end</span>: <span class="literal">true</span></div><div class="line">	&#125;, route.dispatch.bind(route));</div><div class="line"></div><div class="line">	layer.route = route;</div><div class="line"></div><div class="line">	<span class="keyword">this</span>.stack.push(layer);</div><div class="line">	<span class="keyword">return</span> route;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><code>layer.handle_request</code>会执行<code>layer.route</code>的<code>dispatch</code>操作，也就是在Route中派发路由最终执行到在express中定义的对应的路由操作函数，之后又执行<code>next()</code>就又到了这里的<code>proto.stack</code>中的下一个遍历操作。<br>但是如果<code>layer.route</code>不存在，说明这只是一个中间件而不是路由中间件，也就是用<code>route.use</code>定义的中间件，所以就调用<code>trim_prefix</code>方法来执行路由中间件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">trim_prefix</span>(<span class="params">layer, layerError, layerPath, path</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> c = path[layerPath.length];</div><div class="line">	<span class="keyword">if</span> (c &amp;&amp; <span class="string">'/'</span> !== c &amp;&amp; <span class="string">'.'</span> !== c) <span class="keyword">return</span> next(layerError);</div><div class="line"></div><div class="line">		<span class="comment">// Trim off the part of the url that matches the route</span></div><div class="line">		<span class="comment">// middleware (.use stuff) needs to have the path stripped</span></div><div class="line">	<span class="keyword">if</span> (layerPath.length !== <span class="number">0</span>) &#123;</div><div class="line">		debug(<span class="string">'trim prefix (%s) from url %s'</span>, layerPath, req.url);</div><div class="line">		removed = layerPath;</div><div class="line">		req.url = protohost + req.url.substr(protohost.length + removed.length);</div><div class="line"></div><div class="line">		<span class="comment">// Ensure leading slash</span></div><div class="line">		<span class="keyword">if</span> (!fqdn &amp;&amp; req.url[<span class="number">0</span>] !== <span class="string">'/'</span>) &#123;</div><div class="line">			req.url = <span class="string">'/'</span> + req.url;</div><div class="line">			slashAdded = <span class="literal">true</span>;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		<span class="comment">// Setup base URL (no trailing slash)</span></div><div class="line">		req.baseUrl = parentUrl + (removed[removed.length - <span class="number">1</span>] === <span class="string">'/'</span></div><div class="line">			? removed.substring(<span class="number">0</span>, removed.length - <span class="number">1</span>)</div><div class="line">			: removed);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	debug(<span class="string">'%s %s : %s'</span>, layer.name, layerPath, req.originalUrl);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (layerError) &#123;</div><div class="line">		layer.handle_error(layerError, req, res, next);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		layer.handle_request(req, res, next);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法是在<code>proto.handle</code>里定义，和<code>next</code>同级。</p>
 <p>OK，这里再回到while，如果while循环没有找到匹配的layer就进行收尾工作，要么就根据layerError也就是next(err)中的err参数判断是否已经匹配到结果正常首尾，或者就是404没找到匹配。</p>
 <p>分析到这里，这里使用两张图对上面的分析进行一个整理。</p>
 <p>首先是layer,Route和Router这三者的关系（原图片来自文章<a href="https://cnodejs.org/topic/545720506537f4d52c414d87" target="_blank" rel="external">从express源码中探析其路由机制</a>）</p>
@@ -644,8 +165,42 @@ router.get(&apos;/path&apos;, fn1).get(&apos;/path&apos;, fn2).get(&apos;/path&a
 <p>然后是<code>proto.handle</code>的一个执行流程：</p>
 <p><img src="http://7xu027.com1.z0.glb.clouddn.com/express_router_handle.png" alt="proto.handle"></p>
 <p>有了这两张图，再配合之前的文字描述，应该对路由这部分的处理不会有什么问题了。</p>
-<h3 id="application"><a href="#application" class="headerlink" title="application"></a>application</h3><p>application.js, 这里就是定义初始化express应用的地方，也就是express.js中的express应用的proto定义的地方，</p>
-<h3 id="request-和-response"><a href="#request-和-response" class="headerlink" title="request 和 response"></a>request 和 response</h3><h3 id="view"><a href="#view" class="headerlink" title="view"></a>view</h3><h3 id="从请求到响应"><a href="#从请求到响应" class="headerlink" title="从请求到响应"></a>从请求到响应</h3>]]></content>
+<h2 id="request-和-response"><a href="#request-和-response" class="headerlink" title="request 和 response"></a>request 和 response</h2><p>先说request.js，这里是定义app.method(path, function(req, res, next) {}) 中 req对象的地方，首先先看req对象初始化</p>
+<pre><code>var req = Object.create(http.IncommingMessage.prototype);
+</code></pre><p>req是以http.IncommingMessage的原型创建的对象，也就是说http.IncommingMessage该有的事件和方法，req都是有的，并且req也是一个<code>Readable Stream</code>，如果要具体了解，可以去看看<a href="https://nodejs.org/api/http.html#http_class_http_incomingmessage" target="_blank" rel="external">http.IncommingMessage的文档</a></p>
+<p>在这个文件里面express文档中关于req的方法都在这里有对应的定义，并且也不难读，所以这里也就不再多说。</p>
+<p>值得一提的是req.params, req.query和req.body都不是在这里初始化和定义的：</p>
+<ul>
+<li>req.params: 之前在介绍layer.js的时候提到过，req.params是在中间件匹配的过程中生成的，这个params对象先是在layer中初始化并且通过<code>path-to-regexp</code>匹配生成键值对，然后再router/index.js定义Router的handle方法的里，将params值赋给req:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">proto.handle = <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">req, res, out</span>) </span>&#123;</div><div class="line">  <span class="comment">/* 省略 */</span></div><div class="line"></div><div class="line">	<span class="comment">// Capture one-time layer values</span></div><div class="line">	req.params = self.mergeParams</div><div class="line">		? mergeParams(layer.params, parentParams)</div><div class="line">		: layer.params;</div><div class="line">	<span class="comment">/* 省略 */</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>req.query: 这里的可以去看middleware/query.js 中，首先这里定义了query函数中间件，然后在application.js里面定义的lazyrouter方法里，以router.use方法调用这个query函数中间件:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">app.lazyrouter = <span class="function"><span class="keyword">function</span> <span class="title">lazyrouter</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>._router) &#123;</div><div class="line">    <span class="keyword">this</span>._router = <span class="keyword">new</span> Router(&#123;</div><div class="line">      <span class="attr">caseSensitive</span>: <span class="keyword">this</span>.enabled(<span class="string">'case sensitive routing'</span>),</div><div class="line">      <span class="attr">strict</span>: <span class="keyword">this</span>.enabled(<span class="string">'strict routing'</span>)</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>._router.use(query(<span class="keyword">this</span>.get(<span class="string">'query parser fn'</span>)));</div><div class="line">    <span class="keyword">this</span>._router.use(middleware.init(<span class="keyword">this</span>));</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>而这个lazyrouter方法呢只要是使用了app.use或者app.get, app.post等都会调用，所以req.query是在这个时候生成的。</p>
+<ul>
+<li>req.body: 现在这个对象已经不再express处理了，主要是因为<code>body-parser</code>已经从express里依赖的包里面独立出去了，所以这部分的处理可以去看<code>body-parser</code>这个包，当然req.body也是在中间件中生成的；</li>
+</ul>
+<p>然后我们再来看response.js，这里是定义app.method(path, function(req, res, next) {})中的res的地方，首先是res的初始化:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> res = <span class="built_in">Object</span>.create(http.ServerResponse.prototype);</div></pre></td></tr></table></figure>
+<p>res是以http.ServerResponse的原型创建的对象，也就是说http.ServerResponse的事件和方法基本也适用于它，并且也是一个<code>Writable Stream</code>对象。res相对于req就要简单一些，在express文档里面提到的方法在这里都是在这里定义的，所以也不再多说了。</p>
+<h2 id="application"><a href="#application" class="headerlink" title="application"></a>application</h2><p>application.js, 这里就是定义初始化express应用的地方，也就是express.js中的express应用的proto定义的地方，里面也定义了express()返回的对象里面可使用的各个方法，阅读起来难度也不大。</p>
+<p>总的来说application.js算是一个集大成所在的地方了，这里也是express应用对象定义的入口，在分析完各个部分之后，再在application这里看一遍整理一下，应该就比较清楚整个express是什么样的结构了。</p>
+<p>本来这里有一个lazyrouter方法应该说一下，但是在分析req.query的时候已经提到过了，这里就不再赘述了。</p>
+<h2 id="从请求到响应"><a href="#从请求到响应" class="headerlink" title="从请求到响应"></a>从请求到响应</h2><p>以创建一个express服务为例</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> responseTime = <span class="built_in">require</span>(<span class="string">'response-time'</span>);</div><div class="line"><span class="keyword">const</span> cookieParser = <span class="built_in">require</span>(<span class="string">'cookie-parser'</span>);</div><div class="line"><span class="keyword">const</span> bodyParser = <span class="built_in">require</span>(<span class="string">'body-parser'</span>);</div><div class="line"><span class="keyword">const</span> expressSession = <span class="built_in">require</span>(<span class="string">'express-session'</span>);</div><div class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</div><div class="line"><span class="keyword">const</span> compression = <span class="built_in">require</span>(<span class="string">'compression'</span>);</div><div class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</div><div class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"><span class="keyword">const</span> router = <span class="built_in">require</span>(<span class="string">'../routes'</span>);</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">const</span> app = express();</div><div class="line"></div><div class="line"><span class="keyword">const</span> resolve = <span class="function"><span class="params">file</span> =&gt;</span> path.resolve(__dirname, file);</div><div class="line"></div><div class="line">app.use(compression());</div><div class="line">app.use(responseTime());</div><div class="line">app.use(bodyParser.json(&#123;<span class="attr">limit</span>: <span class="string">'10mb'</span>&#125;));</div><div class="line">app.use(bodyParser.urlencoded(&#123;<span class="attr">limit</span>: <span class="string">'10mb'</span>, <span class="attr">parameterLimit</span>: <span class="number">100000</span>, <span class="attr">extended</span>: <span class="literal">false</span>&#125;));</div><div class="line">app.use(cookieParser());</div><div class="line"></div><div class="line">app.use(router);</div><div class="line"></div><div class="line">app.use(<span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</div><div class="line">  next(&#123;<span class="attr">status</span>: <span class="string">'pageNotFound'</span>, <span class="attr">code</span>: <span class="number">404</span>&#125;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">app.listen(<span class="number">8000</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'start up!'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>app.listen方法在application.js里面有定义：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">app.listen = <span class="function"><span class="keyword">function</span> <span class="title">listen</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> server = http.createServer(<span class="keyword">this</span>);</div><div class="line">  <span class="keyword">return</span> server.listen.apply(server, <span class="built_in">arguments</span>);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>关于http.createServer在官方文档里有说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">http.createServer([requestListener])</div><div class="line">Added in: v0.1.13</div><div class="line">requestListener &lt;Function&gt;</div><div class="line"></div><div class="line">Returns: &lt;http.Server&gt;</div><div class="line"></div><div class="line">Returns a new instance of http.Server.</div><div class="line"></div><div class="line">The requestListener is a function which is automatically added to the &apos;request&apos; event.</div></pre></td></tr></table></figure>
+<p>而app(req, res, next)的执行时直接调用的app.handle(req, res, next)方法，也就是在express.js中的createApplication中定义的:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createApplication</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> app = <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</div><div class="line">    app.handle(req, res, next);</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="comment">/* 省略 */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>app.handle()一执行就是直接按照之前app中定义好的中间件顺序进行匹配并且执行了，整个express服务也就这样开始一步一步处理请求，直到最后res对象发送请求到客户端。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章由于笔者的拖延症，整整拖了半年左右才写完，不过最重要的部分也就是中间件那部分的内容是一开始就完成了的。</p>
+<p>由于完成的事件跨度较大，所以express的代码有部分的更新变动可能会导致此文章贴出的源码前后会有一些差异，不过总的实现方法和思想倒是没啥变化。</p>
+<p>express是一个非常轻量的框架，用来实现一些微服务特别便利，但是如果要用来做企业级的应用和服务的话，就需要制定许多约束或者说是规范。笔者也正在这方面努力踩坑=。=。</p>
+]]></content>
     
     <summary type="html">
     
