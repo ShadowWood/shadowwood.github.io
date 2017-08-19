@@ -930,9 +930,9 @@ writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
     
       <category term="node.js" scheme="https://shadowwood.me/tags/node-js/"/>
     
-      <category term="Promise" scheme="https://shadowwood.me/tags/Promise/"/>
-    
       <category term="async" scheme="https://shadowwood.me/tags/async/"/>
+    
+      <category term="Promise" scheme="https://shadowwood.me/tags/Promise/"/>
     
   </entry>
   
