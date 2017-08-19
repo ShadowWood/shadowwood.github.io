@@ -1464,7 +1464,7 @@ figure.highlight .code,
 
 figure.highlight .code pre,
 .codeblock .code pre {
-  max-width: calc(750px - 50px);
+  max-width: 1080px;
   overflow-x: auto;
   overflow-y: hidden; }
 
