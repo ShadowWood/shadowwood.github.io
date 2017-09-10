@@ -230,6 +230,9 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
 
 
 
+    
+<hr />
+<h3>留言:</h3>
 <div id="gitalk-container">
 
 </div>
@@ -240,14 +243,19 @@ var gitalk = new Gitalk({
   clientSecret: '0d22e72a163265bb03f44e550c73d779bc47315f',
   repo: 'shadowwood.github.io',
   owner: 'ShadowWood',
-  admin: ['ShadowWood'],
-  id: 'blog comments',
+  admin: [
+      
+        'ShadowWood',
+      
+  ],
   // facebook-like distraction free mode
   distractionFreeMode: true
 })
 
 gitalk.render('gitalk-container')
 </script>
+
+
 </div>
 
 
