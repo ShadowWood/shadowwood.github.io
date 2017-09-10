@@ -58,8 +58,6 @@
     
 
 
-    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">    
-
 </head>
 
 <body>
@@ -210,6 +208,18 @@ sudo apt-get install npm
 <div id="gitalk-container">
 
 </div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<style>
+.gt-container .gt-header-controls-tip,
+.gt-container a,
+.gt-container .gt-svg svg {
+    color: #585858;
+}
+
+.gt-container .gt-btn {
+    background-color: #FFF;
+}
+</style>
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
 var gitalk = new Gitalk({
