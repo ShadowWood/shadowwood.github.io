@@ -58,6 +58,8 @@
     
 
 
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">    
+
 </head>
 
 <body>
@@ -207,15 +209,27 @@ require_message_authenticator = no
 <!-- Comments -->
 <div>
     
-    <hr />
-    <h3>留言:</h3>
-    <div id="disqus_thread">
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
 
 
 
+<div id="gitalk-container">
 
+</div>
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  clientID: '3c20f2c5396af1661cdd',
+  clientSecret: '0d22e72a163265bb03f44e550c73d779bc47315f',
+  repo: 'shadowwood.github.io',
+  owner: 'ShadowWood',
+  admin: ['ShadowWood'],
+  id: 'blog comments',
+  // facebook-like distraction free mode
+  distractionFreeMode: true
+})
+
+gitalk.render('gitalk-container')
+</script>
 </div>
 
 
@@ -311,9 +325,6 @@ require_message_authenticator = no
 <script src="/js/featherlight.min.js"></script>
 
 <!-- Disqus Comments -->
-
-<script async="true" src="//shadowwood.disqus.com/embed.js">
-</script>
 
 
 </body>
