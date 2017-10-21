@@ -2870,7 +2870,7 @@ ul.time-line li.content-node:hover::before {
 
 /* Header */
 #header {
-  padding: 8em 0 0.1em 0 ; }
+  padding: 3em 0 0.1em 0 ; }
   #header .logo {
     display: block;
     border-bottom: 0;

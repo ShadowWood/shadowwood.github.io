@@ -926,13 +926,13 @@ writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
     
       <category term="javascript" scheme="https://shadowwood.me/tags/javascript/"/>
     
+      <category term="异步" scheme="https://shadowwood.me/tags/%E5%BC%82%E6%AD%A5/"/>
+    
       <category term="node.js" scheme="https://shadowwood.me/tags/node-js/"/>
     
       <category term="async" scheme="https://shadowwood.me/tags/async/"/>
     
       <category term="Promise" scheme="https://shadowwood.me/tags/Promise/"/>
-    
-      <category term="异步" scheme="https://shadowwood.me/tags/%E5%BC%82%E6%AD%A5/"/>
     
   </entry>
   
@@ -1041,9 +1041,9 @@ xReq.send(form);
     
       <category term="javascript" scheme="https://shadowwood.me/tags/javascript/"/>
     
-      <category term="异步" scheme="https://shadowwood.me/tags/%E5%BC%82%E6%AD%A5/"/>
-    
       <category term="图片上传" scheme="https://shadowwood.me/tags/%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0/"/>
+    
+      <category term="异步" scheme="https://shadowwood.me/tags/%E5%BC%82%E6%AD%A5/"/>
     
   </entry>
   
