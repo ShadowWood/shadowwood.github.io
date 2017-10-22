@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shadowwood.me/"/>
-  <updated>2017-04-03T16:25:38.000Z</updated>
+  <updated>2017-10-22T16:13:37.000Z</updated>
   <id>https://shadowwood.me/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/"/>
     <id>https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/</id>
     <published>2016-08-27T13:00:00.000Z</published>
-    <updated>2017-04-03T16:25:38.000Z</updated>
+    <updated>2017-10-22T16:13:37.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
 <a id="more"></a>
@@ -193,7 +193,7 @@
     <link href="https://shadowwood.me/2016/08/12/2016-08-12-acherive-promise/"/>
     <id>https://shadowwood.me/2016/08/12/2016-08-12-acherive-promise/</id>
     <published>2016-08-12T02:08:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2017-10-22T16:14:01.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Promise是js的一个异步流程控制标准，是为了解决js中异步回调过多导致的代码结构混乱的问题。<br>Promise标准已经被写入了ES6的语法中，ES6已经有了原生的Promise对象。之前对async和promise的使用做了一个简单的对比，为了更好的理解Promise对异步回调的一个控制流程，这次根据Promise/A+规范实现一个简单的Promise。</p>
 <a id="more"></a>
@@ -818,7 +818,7 @@ module.exports = Promise;
     <link href="https://shadowwood.me/2016/04/25/2016-04-25-deference-between-async-and-promise/"/>
     <id>https://shadowwood.me/2016/04/25/2016-04-25-deference-between-async-and-promise/</id>
     <published>2016-04-25T08:02:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2017-10-22T16:17:25.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在node.js中执行异步操作时，操作的结果并不是通过返回函数来反馈，而是通过将结果传入回调函数，由回调函数来处理运行结果。<br>如果在一个程序之中，我们需要多数的异步I/O操作，那么我们的回调结构将会是一层套一层不断的嵌套下去形成”callback hell(回调地狱)”。<br>虽然我们也可以通过声明函数的方法来简化回调结构并避免callback hell的产生，但是如果遇到一些比较复杂的依赖关系的话，可能依然会有一些问题。<br>最近接触到node.js两个不同的异步模块async和Promise，给大家做一下对比和分享。<br><a id="more"></a></p>
 <h3 id="async-和-Promise简介"><a href="#async-和-Promise简介" class="headerlink" title="async 和 Promise简介"></a>async 和 Promise简介</h3><p>async(<a href="https://github.com/caolan/async" target="_blank" rel="external">github</a>)是一个包含了许多js异步操作方法的node.js模块，其中共有70个函数，包括一些与数组类似的方法(map, each, filter, reduce…)，和一些异步流程方法(series, parallel, waterfall, …)。<br>这些方法都必须要求在node环境在才能运行实现，并且运行结果都是传递到一个回调函数里，一般都是两个参数，一个参数是错误异常error，另一个是操作结果。</p>
@@ -941,7 +941,7 @@ writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
     <link href="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/"/>
     <id>https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/</id>
     <published>2016-04-22T05:23:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2017-10-22T16:21:51.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br><a id="more"></a></p>
 <h3 id="使用jquery的ajax方法实现"><a href="#使用jquery的ajax方法实现" class="headerlink" title="使用jquery的ajax方法实现"></a>使用jquery的ajax方法实现</h3><h4 id="前端表单"><a href="#前端表单" class="headerlink" title="前端表单"></a>前端表单</h4><pre><code>&lt;form id=&quot;avatar_form&quot; enctype=&quot;multipart/form-data&quot;&gt;
@@ -1662,7 +1662,7 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     <link href="https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/"/>
     <id>https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/</id>
     <published>2015-04-18T05:13:37.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2017-10-22T16:03:29.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> 对于PPPoE很多人应该不陌生，拨号上网都碰过这玩意儿，但是在后台到底是怎么实现这个认证的，了解的人应该不多。<br>正好这学期综合课程设计老师要求搞这玩意儿，那就搞搞咯，时间上的话大概一天就搞定了，但是之后去理解这些配置做了什么东西还是花了很久时间。<br><a id="more"></a></p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><ul>

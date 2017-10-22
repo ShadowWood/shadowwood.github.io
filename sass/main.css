@@ -2577,6 +2577,7 @@ button,
     transition: transform 0.5s ease, opacity 0.5s ease;
     position: relative;
     width: calc(33.33333% - 2.5em);
+    height: 100%;
     margin: 2.5em 0 0 2.5em; }
     .tiles article > .image {
       -moz-transition: -moz-transform 0.5s ease;
@@ -2586,8 +2587,12 @@ button,
       position: relative;
       display: block;
       width: 100%;
+      padding-top: 100%;
       border-radius: 4px;
-      overflow: hidden; }
+      overflow: hidden;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat; }
       .tiles article > .image img {
         display: block;
         width: 100%; }
@@ -2664,7 +2669,11 @@ button,
       color: #ffffff;
       text-align: center;
       text-decoration: none;
-      z-index: 3; }
+      z-index: 3;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none; }
       .tiles article > a > :last-child {
         margin: 0; }
       .tiles article > a:hover {
@@ -2817,7 +2826,7 @@ button,
   padding: 2em 0;
   margin-top: 2em;
   margin-bottom: 2em;
-  margin-left: 2%;
+  margin-left: 6em;
   list-style: none; }
 
 .time-line::before {
@@ -2844,29 +2853,33 @@ button,
   position: absolute;
   left: 0;
   top: 50%;
-  background: #bbb;
-  border-radius: 50%; }
+  background: #ddd;
+  border-radius: 50%;
+  border: 1px solid #ddd; }
 
 .time-line .time-node::before {
+  width: 14px;
+  height: 14px;
+  margin-left: -8px;
+  margin-top: -6px; }
+
+.time-line .content-node > .date {
+  position: absolute;
+  left: -4em; }
+
+.time-line .content-node::before {
   width: 10px;
   height: 10px;
   margin-left: -6px;
-  margin-top: -4px; }
-
-.time-line .content-node::before {
-  width: 6px;
-  height: 6px;
-  margin-left: -4px;
-  margin-top: -2px; }
+  margin-top: -4px;
+  background-color: #fff;
+  transition: background-color ease 0.2s; }
 
 .time-line li {
   padding-left: 2em; }
 
 ul.time-line li.content-node:hover::before {
-  width: 8px;
-  height: 8px;
-  margin-left: -5px;
-  margin-top: -3px; }
+  background: #ddd !important; }
 
 /* Header */
 #header {
