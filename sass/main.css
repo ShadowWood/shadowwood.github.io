@@ -2865,7 +2865,9 @@ button,
 
 .time-line .content-node > .date {
   position: absolute;
-  left: -4em; }
+  left: -4em;
+  top: calc(50% - 15px);
+  font-size: 18px; }
 
 .time-line .content-node::before {
   width: 10px;
