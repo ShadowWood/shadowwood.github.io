@@ -2490,6 +2490,12 @@ button,
   button.icon:before,
   .button.icon:before {
     margin-right: 0.5em; }
+  input[type="submit"].tag,
+  input[type="reset"].tag,
+  input[type="button"].tag,
+  button.tag,
+  .button.tag {
+    margin: 2px; }
   input[type="submit"].fit,
   input[type="reset"].fit,
   input[type="button"].fit,
@@ -2877,6 +2883,14 @@ button,
   background-color: #fff;
   transition: background-color ease 0.2s; }
 
+@media screen and (max-width: 480px) {
+  .time-line .content-node > .description {
+    display: none; } }
+
+.time-line .content-node > .description {
+  font-size: 12px;
+  font-weight: 200; }
+
 .time-line li {
   padding-left: 2em; }
 
@@ -3238,5 +3252,3 @@ body.is-menu-visible #menu {
       padding: 0 1.25em; } }
   #wrapper > * > .inner .tags {
     margin: 50px 0; }
-    #wrapper > * > .inner .tags a.button {
-      margin: 0 15px 0 0; }

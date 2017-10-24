@@ -1662,7 +1662,7 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     <link href="https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/"/>
     <id>https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/</id>
     <published>2015-04-18T05:13:37.000Z</published>
-    <updated>2017-10-22T16:03:29.000Z</updated>
+    <updated>2017-10-24T14:12:01.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> 对于PPPoE很多人应该不陌生，拨号上网都碰过这玩意儿，但是在后台到底是怎么实现这个认证的，了解的人应该不多。<br>正好这学期综合课程设计老师要求搞这玩意儿，那就搞搞咯，时间上的话大概一天就搞定了，但是之后去理解这些配置做了什么东西还是花了很久时间。<br><a id="more"></a></p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><ul>
@@ -1720,7 +1720,7 @@ logfile /var/log/pppd.log
     
     <summary type="html">
     
-      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt; 对于PPPoE很多人应该不陌生，拨号上网都碰过这玩意儿，但是在后台到底是怎么实现这个认证的，了解的人应该不多。&lt;br&gt;正好这学期综合课程设计老师要求搞这玩意儿，那就搞搞咯，时间上的话大概一天就搞定了，但是之后去理解这些配置做了什么东西还是花了很久时间。&lt;br&gt;
+      本文主要介绍在ubuntu上搭建PPPoE服务器的基本流程以及一些遇到的问题总结
     
     </summary>
     
