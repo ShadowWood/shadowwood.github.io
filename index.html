@@ -1,361 +1,2388 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<!-- Head tag -->
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="baidu-site-verification" content="r9nm81dHSe" />
-    <link rel="icon" href="/images/glasses.ico?v=1.0"/>
-    <link rel="shortcut icon" href="/images/glasses.ico?v=1.0"/>
 
-    <!--Description-->
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="不知道写啥0.0">
+<meta name="keywords" content="python javascript web nodejs fullstack">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ShadowWood&#39;s Blog">
+<meta property="og:url" content="https://shadowwood.me/index.html">
+<meta property="og:site_name" content="ShadowWood&#39;s Blog">
+<meta property="og:description" content="不知道写啥0.0">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ShadowWood&#39;s Blog">
+<meta name="twitter:description" content="不知道写啥0.0">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ShadowWood's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://shadowwood.me/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ShadowWood's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
     
-        <meta name="description" content="不知道写啥0.0">
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
     
 
-    <!--Author-->
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ShadowWood's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">睡睡觉，玩玩游戏编编程</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home menu-item-active">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
     
-        <meta name="author" content="Shadow Wood">
-    
 
-    <!--Open Graph Title-->
-    
+  
 
-    <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
+  
+</nav>
 
-    <!--Page Cover-->
-    
-        <meta property="og:image" content=""/>
-    
 
-    <!-- Title -->
-    
-    <title>ShadowWood&#39;s Blog</title>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/sass/main.css">
+  
 
-    <!--[if lt IE 8]>
-        <script src="/js/ie/html5shiv.js"></script>
-    <![endif]-->
 
-    <!--[if lt IE 8]>
-        <link rel="stylesheet" href="/sass/ie8.css">
-    <![endif]-->
 
-    <!--[if lt IE 9]>
-        <link rel="stylesheet" href="/sass/ie9.css">
-    <![endif]-->
+</div>
+    </header>
 
-    <!-- Gallery -->
-    <link rel="stylesheet" href="/css/featherlight.min.css">
-    <!-- Google Analytics -->
     
 
 
-<script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?818f68a34fb7ee2d3343ec7bce3a06d5";
-    var s = document.getElementsByTagName("script")[0]; 
-    s.parentNode.insertBefore(hm, s);
-  })();
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/27/2016-08-27-express-origin-code-analysis/" itemprop="url">
+                  express源码分析
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-08-27 21:00:00" itemprop="dateCreated datePublished" datetime="2016-08-27T21:00:00+08:00">2016-08-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:05:15" itemprop="dateModified" datetime="2018-04-19T20:05:15+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/27/2016-08-27-express-origin-code-analysis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/27/2016-08-27-express-origin-code-analysis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
+<h2 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h2><p>直接<code>npm install express</code>，可以看到express的包结构如下：</p>
+<pre><code>├── lib
+│   ├── middleware
+│   │   ├── init.js
+│   │   └── query.js
+│   ├── router
+│   │   ├── index.js
+│   │   ├── layer.js
+│   │   └── route.js
+│   ├── application.js
+│   ├── express.js
+│   ├── request.js
+│   ├── response.js
+│   ├── utils.js
+│   └── view.js
+├── History.md
+├── index.js
+├── LICENSE
+├── package.json
+└── Readme.md
+</code></pre><p>express模块的入口是 index.js，该文件中又引入了./lib/express.js，并将其用module.exports导出。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/27/2016-08-27-express-origin-code-analysis/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/08/12/2016-08-12-acherive-promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/12/2016-08-12-acherive-promise/" itemprop="url">
+                  Promise的简单实现
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-08-12 10:08:00" itemprop="dateCreated datePublished" datetime="2016-08-12T10:08:00+08:00">2016-08-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/12/2016-08-12-acherive-promise/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/12/2016-08-12-acherive-promise/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Promise是js的一个异步流程控制标准，是为了解决js中异步回调过多导致的代码结构混乱的问题。<br>Promise标准已经被写入了ES6的语法中，ES6已经有了原生的Promise对象。之前对async和promise的使用做了一个简单的对比，为了更好的理解Promise对异步回调的一个控制流程，这次根据Promise/A+规范实现一个简单的Promise。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/12/2016-08-12-acherive-promise/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/04/25/2016-04-25-deference-between-async-and-promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/25/2016-04-25-deference-between-async-and-promise/" itemprop="url">
+                  浅谈js异步流程框架async与Promise的区别
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-25 16:02:00" itemprop="dateCreated datePublished" datetime="2016-04-25T16:02:00+08:00">2016-04-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/25/2016-04-25-deference-between-async-and-promise/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/25/2016-04-25-deference-between-async-and-promise/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在node.js中执行异步操作时，操作的结果并不是通过返回函数来反馈，而是通过将结果传入回调函数，由回调函数来处理运行结果。<br>如果在一个程序之中，我们需要多数的异步I/O操作，那么我们的回调结构将会是一层套一层不断的嵌套下去形成”callback hell(回调地狱)”。<br>虽然我们也可以通过声明函数的方法来简化回调结构并避免callback hell的产生，但是如果遇到一些比较复杂的依赖关系的话，可能依然会有一些问题。<br>最近接触到node.js两个不同的异步模块async和Promise，给大家做一下对比和分享。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/25/2016-04-25-deference-between-async-and-promise/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/22/2016-04-22-js-upload-picture/" itemprop="url">
+                  js实现图片异步上传
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-22 13:23:00" itemprop="dateCreated datePublished" datetime="2016-04-22T13:23:00+08:00">2016-04-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/22/2016-04-22-js-upload-picture/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/22/2016-04-22-js-upload-picture/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/22/2016-04-22-js-upload-picture/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/04/20/2016-04-20-javascript-inherit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/20/2016-04-20-javascript-inherit/" itemprop="url">
+                  浅析javascript的继承方式
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-20 17:08:30" itemprop="dateCreated datePublished" datetime="2016-04-20T17:08:30+08:00">2016-04-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/20/2016-04-20-javascript-inherit/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/20/2016-04-20-javascript-inherit/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>继承是面向对象语言的一个最为重要的概念。许多面向对象语言都支持两周继承方式：接口继承和实现继承。<br>接口继承只继承方法签名，实现继承则继承实际的方法。<br>然而，函数并没有签名，所以在ES中无法实现接口继承，只有实现继承，并且实现方式主要是依靠原型链来实现。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/20/2016-04-20-javascript-inherit/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/04/19/2016-04-19-npm-setup-and-use/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/19/2016-04-19-npm-setup-and-use/" itemprop="url">
+                  node.js的安装与npm的使用
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-19 15:35:30" itemprop="dateCreated datePublished" datetime="2016-04-19T15:35:30+08:00">2016-04-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Nodejs/" itemprop="url" rel="index"><span itemprop="name">Nodejs</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/19/2016-04-19-npm-setup-and-use/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/19/2016-04-19-npm-setup-and-use/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="什么是npm"><a href="#什么是npm" class="headerlink" title="什么是npm"></a>什么是npm</h3><p>npm, Node Package Manager, 是随同node.js一起安装的包管理工具。该管理工具可用于从第三方网站上下载node.js包，常用于：</p>
+<ul>
+<li>允许开发者从npm服务器下载别人编写的第三方包到本地使用。</li>
+<li>允许开发者从npm服务器下载并安装别人编写的命令行程序到本地使用。</li>
+<li>允许开发者将自己编写的包或命令行程序上传到npm服务器供别人使用。</li>
+</ul>
+<p>从而方便开发者的项目构建和解决node.js项目部署上的很多问题。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/19/2016-04-19-npm-setup-and-use/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/" itemprop="url">
+                  PPPoE服务器添加Radius支持
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-05-19 08:46:00" itemprop="dateCreated datePublished" datetime="2015-05-19T08:46:00+08:00">2015-05-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本片文章紧接之前的PPPoE服务器配置和Radius服务器配置，如果还没进行过这两步的同志请移步这里：</p>
+<ul>
+<li><a href="/linux/2015/04/18/build-PPPoE-On-Ubuntu.html">ubuntu上搭建PPPoE认证服务器</a></li>
+<li><a href="/linux/2015/04/29/build-FreeRadius-On-Ubuntu.html">ubuntu上安装和配置FreeRadius</a></li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/" itemprop="url">
+                  ubuntu上安装和配置FreeRadius
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-04-29 15:09:00" itemprop="dateCreated datePublished" datetime="2015-04-29T15:09:00+08:00">2015-04-29</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面笔者分享了在ubuntu上搭建PPPoE服务器的步骤和一些问题及解决办法，但是这学期的综合课程设计内容是要求搭建和配置由radius协议实现认证和计费的PPPoE服务器，之前的东西只是第一步，本文接着分享如何在ubuntu上安装配置FreeRadius来实现基于radius协议的认证和计费。<br>关于radius的介绍可以看一下这里：</p>
+<ul>
+<li><a href="http://blog.csdn.net/liang13664759/article/details/1574367/" target="_blank" rel="external">http://blog.csdn.net/liang13664759/article/details/1574367/</a></li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2015/04/18/2015-04-18-Js-button-timer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/04/18/2015-04-18-Js-button-timer/" itemprop="url">
+                  javascript实现按钮计时
+                </a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-04-18 18:15:30" itemprop="dateCreated datePublished" datetime="2015-04-18T18:15:30+08:00">2015-04-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/04/18/2015-04-18-Js-button-timer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/04/18/2015-04-18-Js-button-timer/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>最近实验和项目忙得不可开交，终于可以闲下心来写写博客了。</p>
+<p>这段时间都在做后台管理的web端，自然也离不开短信验证那一套东西，最开始对js不熟，做按钮计时花了大半时间。<br>今天就拿这个下手吧。为了方便操作html中的元素，就直接用jquery框架了。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/04/18/2015-04-18-Js-button-timer/#更多" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="Shadow Wood" />
+            
+              <p class="site-author-name" itemprop="name">Shadow Wood</p>
+              <p class="site-description motion-element" itemprop="description">不知道写啥0.0</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/shadowwood" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:shadowwood@foxmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friend Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.rapospectre.com/" title="RaPoSpectre" target="_blank">RaPoSpectre</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://vkwk.space/" title="Viking Warlock" target="_blank">Viking Warlock</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://djjowfy.com/" title="djjowfy" target="_blank">djjowfy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://toxni.com/" title="Toxni" target="_blank">Toxni</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yasicyu.com/" title="Yasic Yu" target="_blank">Yasic Yu</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://maples7.com/" title="Maples7" target="_blank">Maples7</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shadow Wood</span>
+
+  
+
+  
+</div>
+
+
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.3.8</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>&<a target="_blank" rel="external nofollow" href="https://pages.github.com"><b>GitHub Pages</b></a></div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
 
 
 
-</head>
-
-<body>
-
-    <div id="wrapper">
-
-        <!-- Menu -->
-        <!-- Header -->
-<header id="header">
-    <div class="inner">
-
-        <!-- Logo -->
-        <a href="/" class="logo">
-            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
-        </a>
-
-        <!-- Nav -->
-        <nav>
-            <ul>
-                <li><a href="#menu">Menu</a></li>
-            </ul>
-        </nav>
-
-    </div>
-</header>
-
-<!-- Menu -->
-<nav id="menu">
-    <h2>Menu</h2>
-    <ul>
-        
-            <li>
-                <a href="/">Home</a>
-            </li>
-        
-            <li>
-                <a href="/archives">Archives</a>
-            </li>
-        
-            <li>
-                <a href="/tags">Tags</a>
-            </li>
-        
-            <li>
-                <a href="/categories">Categories</a>
-            </li>
-        
-            <li>
-                <a href="/about">About</a>
-            </li>
-        
-    </ul>
-</nav>
-
-
-        <div id="main">
-            <div class="inner">
-
-                <!-- Main Content -->
-                <header>
-    <h1>ShadowWood's Blog</h1>
-    <p>睡睡觉，玩玩游戏编编程</p>
-</header>
-
-<section class="tiles">
-    
-        
-
-<article class="style1">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/source.png')">
-    </span>
-    <a href="/2016/08/27/2016-08-27-express-origin-code-analysis/">
-        <h2>express源码分析</h2>
-        <div class="content">
-            <p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style2">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/pinky-promise.png')">
-    </span>
-    <a href="/2016/08/12/2016-08-12-acherive-promise/">
-        <h2>Promise的简单实现</h2>
-        <div class="content">
-            <p>Promise是js的一个异步流程控制标准，之前对async和promise的使用做了一个简单的对比，这次根据Promise/A+规范实现一个简单的Promise，以便对Promise有更深的了解</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style3">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/async_dribbble.png')">
-    </span>
-    <a href="/2016/04/25/2016-04-25-deference-between-async-and-promise/">
-        <h2>浅谈js异步流程框架async与Promise的区别</h2>
-        <div class="content">
-            <p>异步流程的实现是node.js一个重要的模块，最近接触到async和Promise这两个node.js的异步模块，给大家做一下对比和简单的分享。</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style4">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/upload.jpg')">
-    </span>
-    <a href="/2016/04/22/2016-04-22-js-upload-picture/">
-        <h2>js实现图片异步上传</h2>
-        <div class="content">
-            <p>最近在做express练习项目的时候需要解决一个图片异步上传的问题，简单分享下几种的实现方式</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style5">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/1736__new-york-in-blue_p.jpg')">
-    </span>
-    <a href="/2016/04/20/2016-04-20-javascript-inherit/">
-        <h2>浅析javascript的继承方式</h2>
-        <div class="content">
-            <p>本文将列举出javascript的6种继承方式及举例一些简单的应用场景</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style6">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/node-js-wordpress.png')">
-    </span>
-    <a href="/2016/04/19/2016-04-19-npm-setup-and-use/">
-        <h2>node.js的安装与npm的使用</h2>
-        <div class="content">
-            <p>本文将介绍各平台下npm的安装以及npm常见命令的使用</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style7">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/PPPoE-Radius.jpg')">
-    </span>
-    <a href="/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/">
-        <h2>PPPoE服务器添加Radius支持</h2>
-        <div class="content">
-            <p>本文章将分享如何将PPPoE服务器与Radius服务器进行对接，以及在配置过程中遇到的一些问题解决办法。</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style8">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/build-Radius.jpg')">
-    </span>
-    <a href="/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/">
-        <h2>ubuntu上安装和配置FreeRadius</h2>
-        <div class="content">
-            <p>本学期综合课程设计的内容，分享自己在ubuntu上安装FreeRadius的步骤及遇到的问题，系统为Ubuntu 14.04，数据库选用用mysql</p>
-        </div>
-    </a>
-</article>
-    
-        
-
-<article class="style9">
-    <span class="image" style="background-image: url('http://7xu027.com1.z0.glb.clouddn.com/button-timer.jpg')">
-    </span>
-    <a href="/2015/04/18/2015-04-18-Js-button-timer/">
-        <h2>javascript实现按钮计时</h2>
-        <div class="content">
-            <p>在web端实现简单的按钮计时，防止用户短时间内重复的操作</p>
-        </div>
-    </a>
-</article>
-    
-</section>
-
-
-    <div class="pagination-container">
-        <div class="pagination disabled"><a href="/"><i class="icon fa-caret-left"></i></a></div>
-        <div class="pagination "><a href="/page/2/"><i class="icon fa-caret-right"></i></a></div>
-    </div>
 
 
 
-            </div>
-        </div>
 
-        <!-- Footer -->
-<footer id="footer">
-    <div class="inner">
-        <section>
-            <h2>FriendLinks</h2>
-            <div>
-                
-                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
-                    
-                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
-                    
-                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
-                    
-                        <a href="http://toxni.com/" target="_blank">Toxni</a>&nbsp;&nbsp;
-                    
-                        <a href="https://www.yasicyu.com/" target="_blank">Yasic Yu</a>&nbsp;&nbsp;
-                    
-            </div>
-        </section>
-        <section>
-            <h2>Follow</h2>
-            <ul class="icons">
-                
-                
-                
-                
-                
-                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
-                
-                
-                
-                
-                
-                    <li><a href="shadowwood@foxmail.com" class="icon style2 fa-envelope-o" target="_blank" ><span class="label">Email</span></a></li>
-                
-                
-                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
-                
-            </ul>
-        </section>
-        <ul class="copyright">
-            <li>&copy; 2016 - 2017 All rights reserved</li>
-            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
-            <li>
-                Hosted by 
-                
-                    <a href="https://pages.coding.me" style="font-weight: bold">
-                        Coding Pages
-                    </a>
-                    &nbsp;
-                
-                    <a href="https://pages.github.com" style="font-weight: bold">
-                        GitHub Pages
-                    </a>
-                    &nbsp;
-                
-            </li>
-            <li>Shadow Wood</li>
-        </ul>
-    </div>
-</footer>
-    </div>
 
-    <!-- After footer scripts -->
-    
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
 
-<!-- skel -->
-<script src="/js/skel.min.js"></script>
 
-<!-- Custom Code -->
-<script src="/js/util.js"></script>
 
-<!--[if lte IE 8]>
-<script src="/js/ie/respond.min.js"></script>
-<![endif]-->
 
-<!-- Custom Code -->
-<script src="/js/main.js"></script>
 
-<!-- Gallery -->
-<!-- <script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/detect_swipe/2.1.1/jquery.detect_swipe.min.js"></script> -->
-<script src="/js/jquery.min.js"></script>
-<script src="/js/featherlight.min.js"></script>
 
-<!-- Disqus Comments -->
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://disqus_YiKne5rlAv.disqus.com/count.js" async></script>
+  
+
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
 </body>
-
 </html>

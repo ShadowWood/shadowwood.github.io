@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://shadowwood.me/"/>
-  <updated>2017-10-22T16:13:37.000Z</updated>
+  <updated>2018-04-19T12:05:15.903Z</updated>
   <id>https://shadowwood.me/</id>
   
   <author>
@@ -20,10 +20,9 @@
     <link href="https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/"/>
     <id>https://shadowwood.me/2016/08/27/2016-08-27-express-origin-code-analysis/</id>
     <published>2016-08-27T13:00:00.000Z</published>
-    <updated>2017-10-22T16:13:37.000Z</updated>
+    <updated>2018-04-19T12:05:15.903Z</updated>
     
     <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析</p>
-<a id="more"></a>
 <h2 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h2><p>直接<code>npm install express</code>，可以看到express的包结构如下：</p>
 <pre><code>├── lib
 │   ├── middleware
@@ -45,6 +44,7 @@
 ├── package.json
 └── Readme.md
 </code></pre><p>express模块的入口是 index.js，该文件中又引入了./lib/express.js，并将其用module.exports导出。</p>
+<a id="more"></a>
 <h2 id="express-js"><a href="#express-js" class="headerlink" title="express.js"></a>express.js</h2><p><code>lib/express.js</code>是对express所有定义及功能模块的整合，该文件的开头如下：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter;</div><div class="line"><span class="keyword">var</span> mixin = <span class="built_in">require</span>(<span class="string">'merge-descriptors'</span>);</div><div class="line"><span class="keyword">var</span> proto = <span class="built_in">require</span>(<span class="string">'./application'</span>);</div><div class="line"><span class="keyword">var</span> Route = <span class="built_in">require</span>(<span class="string">'./router/route'</span>);</div><div class="line"><span class="keyword">var</span> Router = <span class="built_in">require</span>(<span class="string">'./router'</span>);</div><div class="line"><span class="keyword">var</span> req = <span class="built_in">require</span>(<span class="string">'./request'</span>);</div><div class="line"><span class="keyword">var</span> res = <span class="built_in">require</span>(<span class="string">'./response'</span>);</div><div class="line"></div><div class="line">exports = <span class="built_in">module</span>.exports = createApplication;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createApplication</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> app = <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</div><div class="line">		app.handle(req, res, next);</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	mixin(app, EventEmitter.prototype, <span class="literal">false</span>);</div><div class="line">	mixin(app, proto, <span class="literal">false</span>);</div><div class="line"></div><div class="line">	<span class="comment">// expose the prototype that will get set on requests</span></div><div class="line">  app.request = <span class="built_in">Object</span>.create(req, &#123;</div><div class="line">    app: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</div><div class="line">  &#125;)</div><div class="line"></div><div class="line">	<span class="comment">// expose the prototype that will get set on responses</span></div><div class="line">  app.response = <span class="built_in">Object</span>.create(res, &#123;</div><div class="line">    app: &#123; <span class="attr">configurable</span>: <span class="literal">true</span>, <span class="attr">enumerable</span>: <span class="literal">true</span>, <span class="attr">writable</span>: <span class="literal">true</span>, <span class="attr">value</span>: app &#125;</div><div class="line">  &#125;)</div><div class="line"></div><div class="line">	app.init();</div><div class="line">	<span class="keyword">return</span> app;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>文件一开始便引入了一些基础模块，基本来说根据这些模块的引入基本对express结构基本有一些理解了，之后的分析思路也会沿着这些引入的文件来进行。<br>先大概介绍下这些模块做了哪些事情：</p>
@@ -173,7 +173,28 @@
     
     <summary type="html">
     
-      express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;express是node.js的一个轻量级后端框架，本文将对express的源码实现逻辑及主要服务的实现方式做一些分析&lt;/p&gt;
+&lt;h2 id=&quot;基本结构&quot;&gt;&lt;a href=&quot;#基本结构&quot; class=&quot;headerlink&quot; title=&quot;基本结构&quot;&gt;&lt;/a&gt;基本结构&lt;/h2&gt;&lt;p&gt;直接&lt;code&gt;npm install express&lt;/code&gt;，可以看到express的包结构如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;├── lib
+│   ├── middleware
+│   │   ├── init.js
+│   │   └── query.js
+│   ├── router
+│   │   ├── index.js
+│   │   ├── layer.js
+│   │   └── route.js
+│   ├── application.js
+│   ├── express.js
+│   ├── request.js
+│   ├── response.js
+│   ├── utils.js
+│   └── view.js
+├── History.md
+├── index.js
+├── LICENSE
+├── package.json
+└── Readme.md
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;express模块的入口是 index.js，该文件中又引入了./lib/express.js，并将其用module.exports导出。&lt;/p&gt;
     
     </summary>
     
@@ -193,7 +214,7 @@
     <link href="https://shadowwood.me/2016/08/12/2016-08-12-acherive-promise/"/>
     <id>https://shadowwood.me/2016/08/12/2016-08-12-acherive-promise/</id>
     <published>2016-08-12T02:08:00.000Z</published>
-    <updated>2017-10-22T16:14:01.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>Promise是js的一个异步流程控制标准，是为了解决js中异步回调过多导致的代码结构混乱的问题。<br>Promise标准已经被写入了ES6的语法中，ES6已经有了原生的Promise对象。之前对async和promise的使用做了一个简单的对比，为了更好的理解Promise对异步回调的一个控制流程，这次根据Promise/A+规范实现一个简单的Promise。</p>
 <a id="more"></a>
@@ -798,7 +819,7 @@ module.exports = Promise;
     
     <summary type="html">
     
-      Promise是js的一个异步流程控制标准，之前对async和promise的使用做了一个简单的对比，这次根据Promise/A+规范实现一个简单的Promise，以便对Promise有更深的了解
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;Promise是js的一个异步流程控制标准，是为了解决js中异步回调过多导致的代码结构混乱的问题。&lt;br&gt;Promise标准已经被写入了ES6的语法中，ES6已经有了原生的Promise对象。之前对async和promise的使用做了一个简单的对比，为了更好的理解Promise对异步回调的一个控制流程，这次根据Promise/A+规范实现一个简单的Promise。&lt;/p&gt;
     
     </summary>
     
@@ -818,7 +839,7 @@ module.exports = Promise;
     <link href="https://shadowwood.me/2016/04/25/2016-04-25-deference-between-async-and-promise/"/>
     <id>https://shadowwood.me/2016/04/25/2016-04-25-deference-between-async-and-promise/</id>
     <published>2016-04-25T08:02:00.000Z</published>
-    <updated>2017-10-22T16:17:25.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在node.js中执行异步操作时，操作的结果并不是通过返回函数来反馈，而是通过将结果传入回调函数，由回调函数来处理运行结果。<br>如果在一个程序之中，我们需要多数的异步I/O操作，那么我们的回调结构将会是一层套一层不断的嵌套下去形成”callback hell(回调地狱)”。<br>虽然我们也可以通过声明函数的方法来简化回调结构并避免callback hell的产生，但是如果遇到一些比较复杂的依赖关系的话，可能依然会有一些问题。<br>最近接触到node.js两个不同的异步模块async和Promise，给大家做一下对比和分享。<br><a id="more"></a></p>
 <h3 id="async-和-Promise简介"><a href="#async-和-Promise简介" class="headerlink" title="async 和 Promise简介"></a>async 和 Promise简介</h3><p>async(<a href="https://github.com/caolan/async" target="_blank" rel="external">github</a>)是一个包含了许多js异步操作方法的node.js模块，其中共有70个函数，包括一些与数组类似的方法(map, each, filter, reduce…)，和一些异步流程方法(series, parallel, waterfall, …)。<br>这些方法都必须要求在node环境在才能运行实现，并且运行结果都是传递到一个回调函数里，一般都是两个参数，一个参数是错误异常error，另一个是操作结果。</p>
@@ -917,7 +938,7 @@ writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
     
     <summary type="html">
     
-      异步流程的实现是node.js一个重要的模块，最近接触到async和Promise这两个node.js的异步模块，给大家做一下对比和简单的分享。
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;在node.js中执行异步操作时，操作的结果并不是通过返回函数来反馈，而是通过将结果传入回调函数，由回调函数来处理运行结果。&lt;br&gt;如果在一个程序之中，我们需要多数的异步I/O操作，那么我们的回调结构将会是一层套一层不断的嵌套下去形成”callback hell(回调地狱)”。&lt;br&gt;虽然我们也可以通过声明函数的方法来简化回调结构并避免callback hell的产生，但是如果遇到一些比较复杂的依赖关系的话，可能依然会有一些问题。&lt;br&gt;最近接触到node.js两个不同的异步模块async和Promise，给大家做一下对比和分享。&lt;br&gt;
     
     </summary>
     
@@ -941,7 +962,7 @@ writeFileAsync(&apos;./write.txt&apos;, &apos;test\n&apos;)
     <link href="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/"/>
     <id>https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/</id>
     <published>2016-04-22T05:23:00.000Z</published>
-    <updated>2017-10-22T16:21:51.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br><a id="more"></a></p>
 <h3 id="使用jquery的ajax方法实现"><a href="#使用jquery的ajax方法实现" class="headerlink" title="使用jquery的ajax方法实现"></a>使用jquery的ajax方法实现</h3><h4 id="前端表单"><a href="#前端表单" class="headerlink" title="前端表单"></a>前端表单</h4><pre><code>&lt;form id=&quot;avatar_form&quot; enctype=&quot;multipart/form-data&quot;&gt;
@@ -1032,7 +1053,7 @@ xReq.send(form);
     
     <summary type="html">
     
-      最近在做express练习项目的时候需要解决一个图片异步上传的问题，简单分享下几种的实现方式
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;最近在学习node.js的express框架，其中包含了一个用户系统。&lt;br&gt;之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。&lt;br&gt;但是在图片的异步请求提交的时候遇到了一些问题。&lt;br&gt;因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.&lt;br&gt;
     
     </summary>
     
@@ -1052,7 +1073,7 @@ xReq.send(form);
     <link href="https://shadowwood.me/2016/04/20/2016-04-20-javascript-inherit/"/>
     <id>https://shadowwood.me/2016/04/20/2016-04-20-javascript-inherit/</id>
     <published>2016-04-20T09:08:30.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>继承是面向对象语言的一个最为重要的概念。许多面向对象语言都支持两周继承方式：接口继承和实现继承。<br>接口继承只继承方法签名，实现继承则继承实际的方法。<br>然而，函数并没有签名，所以在ES中无法实现接口继承，只有实现继承，并且实现方式主要是依靠原型链来实现。<br><a id="more"></a></p>
 <h3 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h3><p>原型链的基本思想是<strong>利用原型让一个引用类型继承另一个引用类型的属性和方法</strong>，其基本模式如下：</p>
@@ -1249,7 +1270,7 @@ SubType.prototype.getAge = function () {
     
     <summary type="html">
     
-      本文将列举出javascript的6种继承方式及举例一些简单的应用场景
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;继承是面向对象语言的一个最为重要的概念。许多面向对象语言都支持两周继承方式：接口继承和实现继承。&lt;br&gt;接口继承只继承方法签名，实现继承则继承实际的方法。&lt;br&gt;然而，函数并没有签名，所以在ES中无法实现接口继承，只有实现继承，并且实现方式主要是依靠原型链来实现。&lt;br&gt;
     
     </summary>
     
@@ -1267,7 +1288,7 @@ SubType.prototype.getAge = function () {
     <link href="https://shadowwood.me/2016/04/19/2016-04-19-npm-setup-and-use/"/>
     <id>https://shadowwood.me/2016/04/19/2016-04-19-npm-setup-and-use/</id>
     <published>2016-04-19T07:35:30.000Z</published>
-    <updated>2017-02-23T16:39:04.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="什么是npm"><a href="#什么是npm" class="headerlink" title="什么是npm"></a>什么是npm</h3><p>npm, Node Package Manager, 是随同node.js一起安装的包管理工具。该管理工具可用于从第三方网站上下载node.js包，常用于：</p>
 <ul>
@@ -1324,7 +1345,13 @@ sudo apt-get install npm
     
     <summary type="html">
     
-      本文将介绍各平台下npm的安装以及npm常见命令的使用
+      &lt;h3 id=&quot;什么是npm&quot;&gt;&lt;a href=&quot;#什么是npm&quot; class=&quot;headerlink&quot; title=&quot;什么是npm&quot;&gt;&lt;/a&gt;什么是npm&lt;/h3&gt;&lt;p&gt;npm, Node Package Manager, 是随同node.js一起安装的包管理工具。该管理工具可用于从第三方网站上下载node.js包，常用于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;允许开发者从npm服务器下载别人编写的第三方包到本地使用。&lt;/li&gt;
+&lt;li&gt;允许开发者从npm服务器下载并安装别人编写的命令行程序到本地使用。&lt;/li&gt;
+&lt;li&gt;允许开发者将自己编写的包或命令行程序上传到npm服务器供别人使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;从而方便开发者的项目构建和解决node.js项目部署上的很多问题。&lt;br&gt;
     
     </summary>
     
@@ -1342,7 +1369,7 @@ sudo apt-get install npm
     <link href="https://shadowwood.me/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/"/>
     <id>https://shadowwood.me/2015/05/19/2015-05-19-build-PPPoE-and-Radious-On-Ubuntu/</id>
     <published>2015-05-19T00:46:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本片文章紧接之前的PPPoE服务器配置和Radius服务器配置，如果还没进行过这两步的同志请移步这里：</p>
 <ul>
@@ -1407,7 +1434,11 @@ require_message_authenticator = no
     
     <summary type="html">
     
-      本文章将分享如何将PPPoE服务器与Radius服务器进行对接，以及在配置过程中遇到的一些问题解决办法。
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;本片文章紧接之前的PPPoE服务器配置和Radius服务器配置，如果还没进行过这两步的同志请移步这里：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/linux/2015/04/18/build-PPPoE-On-Ubuntu.html&quot;&gt;ubuntu上搭建PPPoE认证服务器&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/linux/2015/04/29/build-FreeRadius-On-Ubuntu.html&quot;&gt;ubuntu上安装和配置FreeRadius&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
     
     </summary>
     
@@ -1427,7 +1458,7 @@ require_message_authenticator = no
     <link href="https://shadowwood.me/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/"/>
     <id>https://shadowwood.me/2015/04/29/2015-04-29-build-FreeRadius-On-Ubuntu/</id>
     <published>2015-04-29T07:09:00.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>前面笔者分享了在ubuntu上搭建PPPoE服务器的步骤和一些问题及解决办法，但是这学期的综合课程设计内容是要求搭建和配置由radius协议实现认证和计费的PPPoE服务器，之前的东西只是第一步，本文接着分享如何在ubuntu上安装配置FreeRadius来实现基于radius协议的认证和计费。<br>关于radius的介绍可以看一下这里：</p>
 <ul>
@@ -1510,7 +1541,10 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     
     <summary type="html">
     
-      本学期综合课程设计的内容，分享自己在ubuntu上安装FreeRadius的步骤及遇到的问题，系统为Ubuntu 14.04，数据库选用用mysql
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;前面笔者分享了在ubuntu上搭建PPPoE服务器的步骤和一些问题及解决办法，但是这学期的综合课程设计内容是要求搭建和配置由radius协议实现认证和计费的PPPoE服务器，之前的东西只是第一步，本文接着分享如何在ubuntu上安装配置FreeRadius来实现基于radius协议的认证和计费。&lt;br&gt;关于radius的介绍可以看一下这里：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/liang13664759/article/details/1574367/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.csdn.net/liang13664759/article/details/1574367/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
     
     </summary>
     
@@ -1528,7 +1562,7 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     <link href="https://shadowwood.me/2015/04/18/2015-04-18-Js-button-timer/"/>
     <id>https://shadowwood.me/2015/04/18/2015-04-18-Js-button-timer/</id>
     <published>2015-04-18T10:15:30.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<p>最近实验和项目忙得不可开交，终于可以闲下心来写写博客了。</p>
 <p>这段时间都在做后台管理的web端，自然也离不开短信验证那一套东西，最开始对js不熟，做按钮计时花了大半时间。<br>今天就拿这个下手吧。为了方便操作html中的元素，就直接用jquery框架了。<br><a id="more"></a></p>
@@ -1646,7 +1680,8 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     
     <summary type="html">
     
-      在web端实现简单的按钮计时，防止用户短时间内重复的操作
+      &lt;p&gt;最近实验和项目忙得不可开交，终于可以闲下心来写写博客了。&lt;/p&gt;
+&lt;p&gt;这段时间都在做后台管理的web端，自然也离不开短信验证那一套东西，最开始对js不熟，做按钮计时花了大半时间。&lt;br&gt;今天就拿这个下手吧。为了方便操作html中的元素，就直接用jquery框架了。&lt;br&gt;
     
     </summary>
     
@@ -1662,7 +1697,7 @@ insert into usergroup (username,groupname) values (&apos;test&apos;,&apos;user&a
     <link href="https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/"/>
     <id>https://shadowwood.me/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/</id>
     <published>2015-04-18T05:13:37.000Z</published>
-    <updated>2017-10-24T14:12:01.000Z</updated>
+    <updated>2018-04-19T12:06:26.859Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> 对于PPPoE很多人应该不陌生，拨号上网都碰过这玩意儿，但是在后台到底是怎么实现这个认证的，了解的人应该不多。<br>正好这学期综合课程设计老师要求搞这玩意儿，那就搞搞咯，时间上的话大概一天就搞定了，但是之后去理解这些配置做了什么东西还是花了很久时间。<br><a id="more"></a></p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><ul>
@@ -1720,7 +1755,7 @@ logfile /var/log/pppd.log
     
     <summary type="html">
     
-      本文主要介绍在ubuntu上搭建PPPoE服务器的基本流程以及一些遇到的问题总结
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt; 对于PPPoE很多人应该不陌生，拨号上网都碰过这玩意儿，但是在后台到底是怎么实现这个认证的，了解的人应该不多。&lt;br&gt;正好这学期综合课程设计老师要求搞这玩意儿，那就搞搞咯，时间上的话大概一天就搞定了，但是之后去理解这些配置做了什么东西还是花了很久时间。&lt;br&gt;
     
     </summary>
     
@@ -1738,7 +1773,7 @@ logfile /var/log/pppd.log
     <link href="https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/"/>
     <id>https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/</id>
     <published>2015-02-10T00:13:30.000Z</published>
-    <updated>2017-02-21T15:53:00.000Z</updated>
+    <updated>2018-04-19T12:06:25.446Z</updated>
     
     <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>对于刚刚接触python的人并且没有什么编程基础的人来说，从网络爬虫开始入门是个不错的选择。<br>学习一门编程语言要从实践中去学习，必须要自己动手操作，光是看一系列的编程书籍，不动动手做几个实际的程序运行运行，是完全不可能掌握一门语言的。<br>就好比武侠小说里学习一门武功一样，光是看别人操练，自己不比划比划，难道就能练就一身好功夫么？这样的话以后出身江湖不被别人砍死都是万幸了。</p>
 <p>网络爬虫是我学习python(甚至可以说学习编程)的第一个程序(“Hello World”什么的就算了把)。所以在此极力推荐初学python的人选择从网络爬虫作为入门学习的选择。<br><a id="more"></a></p>
@@ -1888,7 +1923,8 @@ print response.read()
     
     <summary type="html">
     
-      本文将介绍python基本的网络请求方式，以及网页抓包分析，适合于刚开始接触python的人学习
+      &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;p&gt;对于刚刚接触python的人并且没有什么编程基础的人来说，从网络爬虫开始入门是个不错的选择。&lt;br&gt;学习一门编程语言要从实践中去学习，必须要自己动手操作，光是看一系列的编程书籍，不动动手做几个实际的程序运行运行，是完全不可能掌握一门语言的。&lt;br&gt;就好比武侠小说里学习一门武功一样，光是看别人操练，自己不比划比划，难道就能练就一身好功夫么？这样的话以后出身江湖不被别人砍死都是万幸了。&lt;/p&gt;
+&lt;p&gt;网络爬虫是我学习python(甚至可以说学习编程)的第一个程序(“Hello World”什么的就算了把)。所以在此极力推荐初学python的人选择从网络爬虫作为入门学习的选择。&lt;br&gt;
     
     </summary>
     

@@ -1,160 +1,431 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<!-- Head tag -->
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="baidu-site-verification" content="r9nm81dHSe" />
-    <link rel="icon" href="/images/glasses.ico?v=1.0"/>
-    <link rel="shortcut icon" href="/images/glasses.ico?v=1.0"/>
-
-    <!--Description-->
-    
-        <meta name="description" content="最近在做express练习项目的时候需要解决一个图片异步上传的问题，简单分享下几种的实现方式">
-    
-
-    <!--Author-->
-    
-        <meta name="author" content="Shadow Wood">
-    
-
-    <!--Open Graph Title-->
-    
-        <meta property="og:title" content="js实现图片异步上传"/>
-    
-
-    <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="ShadowWood&#39;s Blog"/>
-
-    <!--Page Cover-->
-    
-        <meta property="og:image" content=""/>
-    
-
-    <!-- Title -->
-    
-    <title>js实现图片异步上传 - ShadowWood&#39;s Blog</title>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/sass/main.css">
-
-    <!--[if lt IE 8]>
-        <script src="/js/ie/html5shiv.js"></script>
-    <![endif]-->
-
-    <!--[if lt IE 8]>
-        <link rel="stylesheet" href="/sass/ie8.css">
-    <![endif]-->
-
-    <!--[if lt IE 9]>
-        <link rel="stylesheet" href="/sass/ie9.css">
-    <![endif]-->
-
-    <!-- Gallery -->
-    <link rel="stylesheet" href="/css/featherlight.min.css">
-    <!-- Google Analytics -->
-    
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
 
 
-<script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?818f68a34fb7ee2d3343ec7bce3a06d5";
-    var s = document.getElementsByTagName("script")[0]; 
-    s.parentNode.insertBefore(hm, s);
-  })();
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
 </script>
 
 
+  
+
+
+
+
+  <meta name="description" content="前言最近在学习node.js的express框架，其中包含了一个用户系统。之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。但是在图片的异步请求提交的时候遇到了一些问题。因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很">
+<meta name="keywords" content="javascript,图片上传,异步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js实现图片异步上传">
+<meta property="og:url" content="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/index.html">
+<meta property="og:site_name" content="ShadowWood&#39;s Blog">
+<meta property="og:description" content="前言最近在学习node.js的express框架，其中包含了一个用户系统。之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。但是在图片的异步请求提交的时候遇到了一些问题。因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-19T12:06:26.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js实现图片异步上传">
+<meta name="twitter:description" content="前言最近在学习node.js的express框架，其中包含了一个用户系统。之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。但是在图片的异步请求提交的时候遇到了一些问题。因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ShadowWood's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>js实现图片异步上传 | ShadowWood's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
 
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
-    <div id="wrapper">
+  
+  
+    
+  
 
-        <!-- Menu -->
-        <!-- Header -->
-<header id="header">
-    <div class="inner">
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
 
-        <!-- Logo -->
-        <a href="/" class="logo">
-            <span class="symbol"><img src="/images/glasses.svg" alt="" /></span><span class="title">ShadowWood's Blog</span>
-        </a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-        <!-- Nav -->
-        <nav>
-            <ul>
-                <li><a href="#menu">Menu</a></li>
-            </ul>
-        </nav>
-
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ShadowWood's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
     </div>
-</header>
+      
+        <h1 class="site-subtitle" itemprop="description">睡睡觉，玩玩游戏编编程</h1>
+      
+  </div>
 
-<!-- Menu -->
-<nav id="menu">
-    <h2>Menu</h2>
-    <ul>
-        
-            <li>
-                <a href="/">Home</a>
-            </li>
-        
-            <li>
-                <a href="/archives">Archives</a>
-            </li>
-        
-            <li>
-                <a href="/tags">Tags</a>
-            </li>
-        
-            <li>
-                <a href="/categories">Categories</a>
-            </li>
-        
-            <li>
-                <a href="/about">About</a>
-            </li>
-        
-    </ul>
-</nav>
-
-
-        <div id="main">
-            <div class="inner">
-
-                <!-- Main Content -->
-                
-
-    <h1 class="title">js实现图片异步上传</h1>
-    <div class="meta">
-        2016-04-22
-    </div>
-
-
-<!-- Tags -->
-
-
-
-<div class="tags">
-    <a href="/tags/javascript/" class="button small tag">javascript</a> <a href="/tags/图片上传/" class="button small tag">图片上传</a> <a href="/tags/异步/" class="button small tag">异步</a>
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
 
 
 
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
 
-<!-- Gallery -->
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
 
 
-<!-- Content -->
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br><a id="more"></a></p>
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">js实现图片异步上传
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-22 13:23:00" itemprop="dateCreated datePublished" datetime="2016-04-22T13:23:00+08:00">2016-04-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-04-19 20:06:26" itemprop="dateModified" datetime="2018-04-19T20:06:26+08:00">2018-04-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/22/2016-04-22-js-upload-picture/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/22/2016-04-22-js-upload-picture/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在学习node.js的express框架，其中包含了一个用户系统。<br>之前在做用户系统的时候对用户信息的编辑更新都是用的同步的方式来进行表单提交，这一次兴趣使然想用异步的方式来实现信息编辑的表单提交，用jquery框架的ajax方法的对普通的文本信息都能很好的实现。<br>但是在图片的异步请求提交的时候遇到了一些问题。<br>因为jquery框架的ajax方法本身对二进制数据的表单提交没有很好的支持，网上的很多推荐实现方式都说用额外的插件来实现，但是由于‘’不可描述“的原因，当时下载这些插件来使用有些不方便，所以便一直探索不用其他插件的情况下，用jquery的ajax或者原生的js来实现.<br><a id="more"></a></p>
 <h3 id="使用jquery的ajax方法实现"><a href="#使用jquery的ajax方法实现" class="headerlink" title="使用jquery的ajax方法实现"></a>使用jquery的ajax方法实现</h3><h4 id="前端表单"><a href="#前端表单" class="headerlink" title="前端表单"></a>前端表单</h4><pre><code>&lt;form id=&quot;avatar_form&quot; enctype=&quot;multipart/form-data&quot;&gt;
     &lt;input type=&quot;file&quot; name=&quot;avatar&quot;&gt;
 &lt;/form&gt;
@@ -240,150 +511,540 @@ xReq.onload = function(oEvent) {
 
 xReq.send(form);
 </code></pre>
-
-<!-- Comments -->
-<div>
-    
-
-
+      
+    </div>
 
     
-<hr />
-<h3>留言:</h3>
-<div id="gitalk-container">
+      
 
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/图片上传/" rel="tag"># 图片上传</a>
+          
+            <a href="/tags/异步/" rel="tag"># 异步</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/20/2016-04-20-javascript-inherit/" rel="next" title="浅析javascript的继承方式">
+                <i class="fa fa-chevron-left"></i> 浅析javascript的继承方式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/25/2016-04-25-deference-between-async-and-promise/" rel="prev" title="浅谈js异步流程框架async与Promise的区别">
+                浅谈js异步流程框架async与Promise的区别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="Shadow Wood" />
+            
+              <p class="site-author-name" itemprop="name">Shadow Wood</p>
+              <p class="site-description motion-element" itemprop="description">不知道写啥0.0</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/shadowwood" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:shadowwood@foxmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friend Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.rapospectre.com/" title="RaPoSpectre" target="_blank">RaPoSpectre</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://vkwk.space/" title="Viking Warlock" target="_blank">Viking Warlock</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://djjowfy.com/" title="djjowfy" target="_blank">djjowfy</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://toxni.com/" title="Toxni" target="_blank">Toxni</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.yasicyu.com/" title="Yasic Yu" target="_blank">Yasic Yu</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://maples7.com/" title="Maples7" target="_blank">Maples7</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用jquery的ajax方法实现"><span class="nav-number">2.</span> <span class="nav-text">使用jquery的ajax方法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端表单"><span class="nav-number">2.1.</span> <span class="nav-text">前端表单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#js代码"><span class="nav-number">2.2.</span> <span class="nav-text">js代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XMLRequest实现"><span class="nav-number">3.</span> <span class="nav-text">XMLRequest实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shadow Wood</span>
+
+  
+
+  
 </div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<style>
-.gt-container .gt-header-controls-tip,
-.gt-container a,
-.gt-container .gt-svg svg {
-    color: #585858;
-}
 
-.gt-container .gt-btn,
-.gt-container .gt-btn:hover {
-    background-color: #FFF;
-}
-</style>
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-var gitalk = new Gitalk({
-  clientID: '3c20f2c5396af1661cdd',
-  clientSecret: '0d22e72a163265bb03f44e550c73d779bc47315f',
-  repo: 'shadowwood.github.io',
-  owner: 'ShadowWood',
-  admin: [
-      
-        'ShadowWood',
-      
-  ],
-  // facebook-like distraction free mode
-  distractionFreeMode: true
-})
 
-gitalk.render('gitalk-container')
+  
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.3.8</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>&<a target="_blank" rel="external nofollow" href="https://pages.github.com"><b>GitHub Pages</b></a></div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
 
 
-</div>
 
 
 
-            </div>
-        </div>
 
-        <!-- Footer -->
-<footer id="footer">
-    <div class="inner">
-        <section>
-            <h2>FriendLinks</h2>
-            <div>
-                
-                        <a href="https://www.rapospectre.com/" target="_blank">RaPoSpectre</a>&nbsp;&nbsp;
-                    
-                        <a href="https://vkwk.space/" target="_blank">Viking Warlock</a>&nbsp;&nbsp;
-                    
-                        <a href="http://djjowfy.com/" target="_blank">djjowfy</a>&nbsp;&nbsp;
-                    
-                        <a href="http://toxni.com/" target="_blank">Toxni</a>&nbsp;&nbsp;
-                    
-                        <a href="https://www.yasicyu.com/" target="_blank">Yasic Yu</a>&nbsp;&nbsp;
-                    
-            </div>
-        </section>
-        <section>
-            <h2>Follow</h2>
-            <ul class="icons">
-                
-                
-                
-                
-                
-                    <li><a href="https://github.com/ShadowWood" class="icon style2 fa-github" target="_blank" ><span class="label">GitHub</span></a></li>
-                
-                
-                
-                
-                
-                    <li><a href="shadowwood@foxmail.com" class="icon style2 fa-envelope-o" target="_blank" ><span class="label">Email</span></a></li>
-                
-                
-                    <li><a href="/atom.xml" class="icon style2 fa-rss" target="_blank" ><span class="label">RSS</span></a></li>
-                
-            </ul>
-        </section>
-        <ul class="copyright">
-            <li>&copy; 2016 - 2017 All rights reserved</li>
-            <li>Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a></li>
-            <li>
-                Hosted by 
-                
-                    <a href="https://pages.coding.me" style="font-weight: bold">
-                        Coding Pages
-                    </a>
-                    &nbsp;
-                
-                    <a href="https://pages.github.com" style="font-weight: bold">
-                        GitHub Pages
-                    </a>
-                    &nbsp;
-                
-            </li>
-            <li>Shadow Wood</li>
-        </ul>
-    </div>
-</footer>
-    </div>
 
-    <!-- After footer scripts -->
-    
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
 
-<!-- skel -->
-<script src="/js/skel.min.js"></script>
 
-<!-- Custom Code -->
-<script src="/js/util.js"></script>
 
-<!--[if lte IE 8]>
-<script src="/js/ie/respond.min.js"></script>
-<![endif]-->
 
-<!-- Custom Code -->
-<script src="/js/main.js"></script>
 
-<!-- Gallery -->
-<!-- <script src="//cdn.rawgit.com/noelboss/featherlight/1.3.5/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/detect_swipe/2.1.1/jquery.detect_swipe.min.js"></script> -->
-<script src="/js/jquery.min.js"></script>
-<script src="/js/featherlight.min.js"></script>
 
-<!-- Disqus Comments -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://disqus_YiKne5rlAv.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://shadowwood.me/2016/04/22/2016-04-22-js-upload-picture/';
+        this.page.identifier = '2016/04/22/2016-04-22-js-upload-picture/';
+        this.page.title = 'js实现图片异步上传';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://disqus_YiKne5rlAv.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        $(function () {
+          var offsetTop = $('#comments').offset().top - $(window).height();
+          if (offsetTop <= 0) {
+            // load directly when there's no a scrollbar
+            loadComments();
+          } else {
+            $(window).on('scroll.disqus_scroll', function () {
+              var scrollTop = document.documentElement.scrollTop;
+              if (scrollTop >= offsetTop) {
+                $(window).off('.disqus_scroll');
+                loadComments();
+              }
+            });
+          }
+        });
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
 
   
 
 </body>
-
 </html>
