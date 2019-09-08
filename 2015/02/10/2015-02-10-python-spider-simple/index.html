@@ -4,103 +4,57 @@
 
 
 
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/uploads/icon-72x72.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/uploads/icon-70x70.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/uploads/icon-36x36.png?v=7.4.0">
+  <link rel="mask-icon" href="/uploads/icon-70x70.png?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ShadowWood's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
-
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/uploads/glasses.svg?v=6.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/uploads/glasses.svg?v=6.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/uploads/glasses.svg?v=6.2.0">
-
-
-  <link rel="mask-icon" href="/uploads/glasses.svg?v=6.2.0" color="#222">
-
-
-
-
-
-
-
-
-
-<script type="text/javascript" id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    version: '6.2.0',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
-    fastclick: false,
+    mediumzoom: false,
     lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    pangu: false,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
   };
 </script>
-
-
-  
-
-
-
 
   <meta name="description" content="前言对于刚刚接触python的人并且没有什么编程基础的人来说，从网络爬虫开始入门是个不错的选择。学习一门编程语言要从实践中去学习，必须要自己动手操作，光是看一系列的编程书籍，不动动手做几个实际的程序运行运行，是完全不可能掌握一门语言的。就好比武侠小说里学习一门武功一样，光是看别人操练，自己不比划比划，难道就能练就一身好功夫么？这样的话以后出身江湖不被别人砍死都是万幸了。 网络爬虫是我学习pytho">
 <meta name="keywords" content="python,网络爬虫">
@@ -114,21 +68,17 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python网络爬虫入门">
 <meta name="twitter:description" content="前言对于刚刚接触python的人并且没有什么编程基础的人来说，从网络爬虫开始入门是个不错的选择。学习一门编程语言要从实践中去学习，必须要自己动手操作，光是看一系列的编程书籍，不动动手做几个实际的程序运行运行，是完全不可能掌握一门语言的。就好比武侠小说里学习一门武功一样，光是看别人操练，自己不比划比划，难道就能练就一身好功夫么？这样的话以后出身江湖不被别人砍死都是万幸了。 网络爬虫是我学习pytho">
+  <link rel="canonical" href="https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/">
 
 
-
-  <link rel="alternate" href="/atom.xml" title="ShadowWood's Blog" type="application/atom+xml" />
-
-
-
-
-  <link rel="canonical" href="https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/"/>
-
-
-
-<script type="text/javascript" id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
@@ -142,59 +92,47 @@
 
 
 
-
   <noscript>
-  <style type="text/css">
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
-    .use-motion {
-      .logo-line-before i { left: initial; }
-      .logo-line-after i { right: initial; }
-    }
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
   </style>
 </noscript>
 
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container use-motion">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">ShadowWood's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
         <h1 class="site-subtitle" itemprop="description">睡睡觉，玩玩游戏编编程</h1>
       
   </div>
@@ -209,176 +147,128 @@
 </div>
 
 
-
-
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-    <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-    <a href="/about/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-    <a href="/tags/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-    <a href="/categories/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-    <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
-  </li>
-
+  <ul id="menu" class="menu">
       
       
-    </ul>
-  
-
-  
+      
+        
+        <li class="menu-item menu-item-home">
+      
     
 
-  
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
 
-  
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+    
+
 </nav>
-
-
-
-  
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          
           <div id="content" class="content">
             
 
   <div id="posts" class="posts-expand">
-    
-
-  
-
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block post">
     <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shadow Wood">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="不知道写啥0.0">
       <meta itemprop="image" content="/uploads/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="ShadowWood's Blog">
     </span>
-
-    
       <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">python网络爬虫入门
 
-        
-        
-          <h2 class="post-title" itemprop="name headline">python网络爬虫入门
-              
-            
-          </h2>
-        
+          
+        </h2>
 
         <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
+              <span class="post-meta-item-text">发表于</span>
 
               
                 
               
 
               <time title="创建时间：2015-02-10 08:13:30" itemprop="dateCreated datePublished" datetime="2015-02-10T08:13:30+08:00">2015-02-10</time>
+            </span>
+          
             
 
             
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
+                <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2018-04-19 20:06:25" itemprop="dateModified" datetime="2018-04-19T20:06:25+08:00">2018-04-19</time>
-              
+              </span>
             
-          </span>
-
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
+              <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
 
@@ -389,40 +279,28 @@
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2015/02/10/2015-02-10-python-spider-simple/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/02/10/2015-02-10-python-spider-simple/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2015/02/10/2015-02-10-python-spider-simple/#comments" itemprop="discussionUrl"><span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/02/10/2015-02-10-python-spider-simple/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
 
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>对于刚刚接触python的人并且没有什么编程基础的人来说，从网络爬虫开始入门是个不错的选择。<br>学习一门编程语言要从实践中去学习，必须要自己动手操作，光是看一系列的编程书籍，不动动手做几个实际的程序运行运行，是完全不可能掌握一门语言的。<br>就好比武侠小说里学习一门武功一样，光是看别人操练，自己不比划比划，难道就能练就一身好功夫么？这样的话以后出身江湖不被别人砍死都是万幸了。</p>
@@ -433,7 +311,7 @@
 <p>python作为一门脚本语言，自身集合了很多WEB操作的库，再结合其简洁的语法，往往只需要简单几行代码，就能完成一些复杂的请求和分析。</p>
 <p>现在我们以抓取天涯论坛的帖子为例。</p>
 <ul>
-<li><a href="http://bbs.tianya.cn/post-culture-308737-1.shtml" target="_blank" rel="external">http://bbs.tianya.cn/post-culture-308737-1.shtml</a></li>
+<li><a href="http://bbs.tianya.cn/post-culture-308737-1.shtml" target="_blank" rel="noopener">http://bbs.tianya.cn/post-culture-308737-1.shtml</a></li>
 </ul>
 <p>这是一篇天涯论坛上的小说，现在我们准备写一个简单的网络爬虫，把这个网页的帖子抓取下来。</p>
 <pre><code>import urllib
@@ -463,7 +341,7 @@ print content[0]
 <p>上一部分主要讲解了如何使用python发送HTTP  GET 请求并简单处理获取到的数据，其中用到了 urllib 和 re 库。http协议常用的请求中除了 GET 方法，还有 POST 方法。POST 方法与 GET 方法的区别网上已经有很多讲解了，这里笔者也不再赘述，简单的来说 GET 方法用于信息获取，POST 方法可能会对服务器上的资源进行修改。本篇文章以发送手机短信为例，讲解如何发送http POST请求。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>这里笔者选用的短信服务商为云片网，关于云片网的api文档请移步这里：</p>
 <ul>
-<li><a href="http://www.yunpian.com/api/sms.html" target="_blank" rel="external">http://www.yunpian.com/api/sms.html</a></li>
+<li><a href="http://www.yunpian.com/api/sms.html" target="_blank" rel="noopener">http://www.yunpian.com/api/sms.html</a></li>
 </ul>
 <p>在api文档里已经有调用短信接口的python代码示例，不过示例代码中使用的是urllib库。因此笔者在这里使用urllib2进行编写，这个库也是python的标准库之一，用来处理http请求非常方便。</p>
 <h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><pre><code># -*- coding: utf-8 -*-
@@ -570,90 +448,71 @@ print response.read()
 <p>在模拟登录操作成功之后，我们就可以通过get或者post请求直接访问获取我们登录后才能看到的信息了，如个人学籍信息等，不过一定要使用urllib2.urlopen()或者OpenerDirector.open()方法来发送请求，因为我们之后的操作必须使用到我们之前登录成功获取到的cookie值，所以我们必须用我们生成的OpenerDirector对象的open方法来发送请求（其实urllib2.urlopen()也是默认调用当前OpenerDirector对象的open()方法）。</p>
 <h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>对于模拟登录的方法，实现方式不止以上的一种，不过基本思想都是一致的。归根结底就是用户先向服务器发送需要认证的信息，然后服务器返回给你一个身份标识，之后用户每次向服务器发送请求的时候，都将这个身份标识一起发给服务器，向服务器证明你是一个登录的合法用户，然后服务器返回给用户应该看到的和想看到的数据。</p>
 
-      
     </div>
 
     
-
     
     
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
       
-        <div class="post-tags">
+
+        
+      
+
+      <footer class="post-footer">
           
-            <a href="/tags/python/" rel="tag"># python</a>
+            
           
-            <a href="/tags/网络爬虫/" rel="tag"># 网络爬虫</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
+          <div class="post-tags">
+            
+              <a href="/tags/python/" rel="tag"># python</a>
+            
+              <a href="/tags/网络爬虫/" rel="tag"># 网络爬虫</a>
             
           </div>
+        
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/" rel="prev" title="ubuntu上搭建PPPoE认证服务器">
-                ubuntu上搭建PPPoE认证服务器 <i class="fa fa-chevron-right"></i>
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2015/04/18/2015-04-18-build-PPPoE-On-Ubuntu/" rel="prev" title="ubuntu上搭建PPPoE认证服务器">
+                  ubuntu上搭建PPPoE认证服务器 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
           </div>
-        </div>
-      
-
-      
-      
-    </footer>
+        
+      </footer>
+    
   </div>
   
   
   
   </article>
 
-
-
-    <div class="post-spread">
-      
-    </div>
   </div>
 
 
           </div>
           
-
-  
-    <div class="comments" id="comments">
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </div>
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
     </div>
-
+  </div>
   
-
-
+  
 
         </div>
-        
           
   
   <div class="sidebar-toggle">
@@ -664,251 +523,168 @@ print response.read()
     </div>
   </div>
 
-  <aside id="sidebar" class="sidebar">
-    
+  <aside class="sidebar">
     <div class="sidebar-inner">
-
+        
+        
+        
+        
       
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/uploads/avatar.png"
-                alt="Shadow Wood" />
-            
-              <p class="site-author-name" itemprop="name">Shadow Wood</p>
-              <p class="site-description motion-element" itemprop="description">不知道写啥0.0</p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">11</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-categories">
-                  <a href="/categories/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">4</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  <a href="/tags/index.html">
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">16</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
-              
-            </nav>
-          
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  <a href="https://github.com/shadowwood" target="_blank" title="GitHub" rel="external nofollow"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                  
-                </span>
-              
-                <span class="links-of-author-item">
-                  <a href="mailto:shadowwood@foxmail.com" target="_blank" title="E-Mail" rel="external nofollow"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  
-                </span>
-              
-            </div>
-          
-
-          
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Friend Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.rapospectre.com/" title="RaPoSpectre" target="_blank">RaPoSpectre</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://vkwk.space/" title="Viking Warlock" target="_blank">Viking Warlock</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://djjowfy.com/" title="djjowfy" target="_blank">djjowfy</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://toxni.com/" title="Toxni" target="_blank">Toxni</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.yasicyu.com/" title="Yasic Yu" target="_blank">Yasic Yu</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://maples7.com/" title="Maples7" target="_blank">Maples7</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </section>
-
-      
       <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络爬虫简介"><span class="nav-number">2.</span> <span class="nav-text">网络爬虫简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取网页"><span class="nav-number">3.</span> <span class="nav-text">获取网页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#匹配字符串获取数据"><span class="nav-number">4.</span> <span class="nav-text">匹配字符串获取数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">5.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">6.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码讲解"><span class="nav-number">7.</span> <span class="nav-text">代码讲解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码进阶"><span class="nav-number">8.</span> <span class="nav-text">代码进阶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是模拟登录"><span class="nav-number">9.</span> <span class="nav-text">什么是模拟登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要准备的工具"><span class="nav-number">10.</span> <span class="nav-text">需要准备的工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抓包"><span class="nav-number">11.</span> <span class="nav-text">抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现-1"><span class="nav-number">12.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码讲解-1"><span class="nav-number">13.</span> <span class="nav-text">代码讲解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">14.</span> <span class="nav-text">结语</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络爬虫简介"><span class="nav-number">2.</span> <span class="nav-text">网络爬虫简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取网页"><span class="nav-number">3.</span> <span class="nav-text">获取网页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#匹配字符串获取数据"><span class="nav-number">4.</span> <span class="nav-text">匹配字符串获取数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">5.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">6.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码讲解"><span class="nav-number">7.</span> <span class="nav-text">代码讲解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码进阶"><span class="nav-number">8.</span> <span class="nav-text">代码进阶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是模拟登录"><span class="nav-number">9.</span> <span class="nav-text">什么是模拟登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要准备的工具"><span class="nav-number">10.</span> <span class="nav-text">需要准备的工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抓包"><span class="nav-number">11.</span> <span class="nav-text">抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现-1"><span class="nav-number">12.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码讲解-1"><span class="nav-number">13.</span> <span class="nav-text">代码讲解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">14.</span> <span class="nav-text">结语</span></a></li></ol></div>
+        
+      </div>
       <!--/noindex-->
-      
 
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/uploads/avatar.png"
+      alt="Shadow Wood">
+  <p class="site-author-name" itemprop="name">Shadow Wood</p>
+  <div class="site-description" itemprop="description">不知道写啥0.0</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
       
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/shadowwood" title="GitHub &rarr; https://github.com/shadowwood" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:shadowwood@foxmail.com" title="E-Mail &rarr; mailto:shadowwood@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.rapospectre.com/" title="https://www.rapospectre.com/" rel="noopener" target="_blank">RaPoSpectre</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://vkwk.space/" title="https://vkwk.space/" rel="noopener" target="_blank">Viking Warlock</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://djjowfy.com/" title="http://djjowfy.com/" rel="noopener" target="_blank">djjowfy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://toxni.com/" title="http://toxni.com/" rel="noopener" target="_blank">Toxni</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yasicyu.com/" title="https://www.yasicyu.com/" rel="noopener" target="_blank">Yasic Yu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://maples7.com/" title="http://maples7.com/" rel="noopener" target="_blank">Maples7</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
 
     </div>
   </aside>
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Shadow Wood</span>
-
-  
-
-  
 </div>
-
-
-  
-
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" rel="external nofollow" href="https://hexo.io">Hexo</a> 强力驱动 v3.3.8</div>
-
-
-
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" rel="external nofollow" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
-
-
-
-  <div class="footer-custom">Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>&<a target="_blank" rel="external nofollow" href="https://pages.github.com"><b>GitHub Pages</b></a></div>
-
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.0</div>
+  <br/>
+  Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>&<a target="_blank" rel="external nofollow" href="https://pages.github.com"><b>GitHub Pages</b></a>
 
         
+
+
+
+
 
 
 
@@ -920,180 +696,98 @@ print response.read()
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
   </div>
 
   
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://shadowwood-me.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
   }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
 </script>
+<script>
+  function disqus_config() {
+    this.page.url = "https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/";
+    this.page.identifier = "2015/02/10/2015-02-10-python-spider-simple/";
+    this.page.title = 'python网络爬虫入门';};
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://shadowwood-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    (function() {
+      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        var disqus_scroll = () => {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+          var scrollTop = window.scrollY;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
-
-
-
-  
-
-  
-    <script id="dsq-count-scr" src="https://shadowwood-me.disqus.com/count.js" async></script>
-  
-
-  
-    <script type="text/javascript">
-      var disqus_config = function () {
-        this.page.url = 'https://shadowwood.me/2015/02/10/2015-02-10-python-spider-simple/';
-        this.page.identifier = '2015/02/10/2015-02-10-python-spider-simple/';
-        this.page.title = 'python网络爬虫入门';
-      };
-      function loadComments () {
-        var d = document, s = d.createElement('script');
-        s.src = 'https://shadowwood-me.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', '' + +new Date());
-        (d.head || d.body).appendChild(s);
-      }
-      
-        $(function () {
-          var offsetTop = $('#comments').offset().top - $(window).height();
-          if (offsetTop <= 0) {
-            // load directly when there's no a scrollbar
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            window.removeEventListener('scroll', disqus_scroll);
             loadComments();
-          } else {
-            $(window).on('scroll.disqus_scroll', function () {
-              var scrollTop = document.documentElement.scrollTop;
-              if (scrollTop >= offsetTop) {
-                $(window).off('.disqus_scroll');
-                loadComments();
-              }
-            });
           }
-        });
-      
-    </script>
+        };
+        window.addEventListener('scroll', disqus_scroll);
+      }
+    })();
   
-
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
+</script>
 
 </body>
 </html>

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/uploads/icon-72x72.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/uploads/icon-70x70.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/uploads/icon-36x36.png?v=7.4.0">
+  <link rel="mask-icon" href="/uploads/icon-70x70.png?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="ShadowWood's Blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="问题描述给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。 示例 1： 输入: “babad”输出: “bab”注意: “aba” 也是一个有效答案。示例 2： 输入: “cbbd”输出: “bb” 题目出处：leetcode 题目分析回文字符串，即正读和反读都相等的字符串，例如”aba, bb, aabbaa”都是回文字符串。 笔者作为一个算法菜鸡，第一眼看">
+<meta name="keywords" content="javascript,Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode刷题记---最长回文子串">
+<meta property="og:url" content="https://shadowwood.me/2019/09/08/2019-09-08-leetcode-longest-palindrome/index.html">
+<meta property="og:site_name" content="ShadowWood&#39;s Blog">
+<meta property="og:description" content="问题描述给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。 示例 1： 输入: “babad”输出: “bab”注意: “aba” 也是一个有效答案。示例 2： 输入: “cbbd”输出: “bb” 题目出处：leetcode 题目分析回文字符串，即正读和反读都相等的字符串，例如”aba, bb, aabbaa”都是回文字符串。 笔者作为一个算法菜鸡，第一眼看">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-08T10:03:08.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="leetcode刷题记---最长回文子串">
+<meta name="twitter:description" content="问题描述给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。 示例 1： 输入: “babad”输出: “bab”注意: “aba” 也是一个有效答案。示例 2： 输入: “cbbd”输出: “bb” 题目出处：leetcode 题目分析回文字符串，即正读和反读都相等的字符串，例如”aba, bb, aabbaa”都是回文字符串。 笔者作为一个算法菜鸡，第一眼看">
+  <link rel="canonical" href="https://shadowwood.me/2019/09/08/2019-09-08-leetcode-longest-palindrome/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>leetcode刷题记---最长回文子串 | ShadowWood's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ShadowWood's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">睡睡觉，玩玩游戏编编程</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://shadowwood.me/2019/09/08/2019-09-08-leetcode-longest-palindrome/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shadow Wood">
+      <meta itemprop="description" content="不知道写啥0.0">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWood's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">leetcode刷题记---最长回文子串
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-08 10:00:00 / 修改时间：18:03:08" itemprop="dateCreated datePublished" datetime="2019-09-08T10:00:00+08:00">2019-09-08</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2019/09/08/2019-09-08-leetcode-longest-palindrome/#comments" itemprop="discussionUrl"><span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/09/08/2019-09-08-leetcode-longest-palindrome/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。</p>
+<p>示例 1：</p>
+<p>输入: “babad”<br>输出: “bab”<br>注意: “aba” 也是一个有效答案。<br>示例 2：</p>
+<p>输入: “cbbd”<br>输出: “bb”</p>
+<p>题目出处：<a href="https://leetcode-cn.com/problems/longest-palindromic-substring" target="_blank" rel="noopener">leetcode</a></p>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>回文字符串，即正读和反读都相等的字符串，例如”aba, bb, aabbaa”都是回文字符串。</p>
+<p>笔者作为一个算法菜鸡，第一眼看到这个题目首先想到的便是把输入字符串的所以子串遍历出来，然后挨个验证每个子串是否是回文字符串，从中找出最长的输出，并且题目描述中可以看出，如果存在多个最长子串，那么要求输出位置最靠近原字符串尾部的那一个。</p>
+<h2 id="暴力解题法"><a href="#暴力解题法" class="headerlink" title="暴力解题法"></a>暴力解题法</h2><p>顺着最开始的思路来剖析一下我们需要干一些什么事情：</p>
+<ol>
+<li>首先，需要遍历出所有的子串。因为需要找出最长的回文子串，那么先从最长的子串找起，这里需要一个循环遍历子串的长度length；（第一个循环）</li>
+<li>然后，对于每个给予的长度length，再遍历出所有需要的子串；（第二个循环）</li>
+<li>最后对于每个子串，再对其验证是否为回文子串；（第三个循环）</li>
+</ol>
+<p>顺着这个思路，开始编码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">longestPalindrome</span>(<span class="params">s</span>) </span>&#123;  </span><br><span class="line">  <span class="keyword">if</span> (s.length &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> s;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 验证子串函数</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">varifySubStr</span>(<span class="params">subStr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> start = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> end = subStr.length - <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (start &lt; end) &#123;</span><br><span class="line">      <span class="keyword">if</span> (subStr[start] !== subStr[end]) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      start++;</span><br><span class="line">      end--;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> length = s.length; length &gt; <span class="number">0</span>; length--) &#123;</span><br><span class="line">    <span class="comment">// 第一个循环，从最长的长度开始遍历长度</span></span><br><span class="line">    <span class="keyword">let</span> start = s.length - length;</span><br><span class="line">    <span class="keyword">let</span> end = s.length - <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>(start &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">// 第二个循环，从原始字符串的尾部开始找出所有的子串</span></span><br><span class="line">      <span class="keyword">let</span> substr = s.substring(start, end+<span class="number">1</span>);</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">if</span> (varifySubStr(substr)) &#123;</span><br><span class="line">        <span class="comment">// 如果找到了回文字符串，就立即返回</span></span><br><span class="line">        <span class="keyword">return</span> substr;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      end--;</span><br><span class="line">      start--;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上的思路还是很简单的，但是时间复杂度着实高(O(n^3))，只能勉强通过leetcode测试。</p>
+<p>暴力破解法：</p>
+<ul>
+<li>时间复杂度：O(n^3);</li>
+<li>空间复杂度: O(1);</li>
+</ul>
+<h2 id="优化思路"><a href="#优化思路" class="headerlink" title="优化思路"></a>优化思路</h2><p>那么从暴力破解法开始看，这三个循环是否有可以优化的点呢？</p>
+<ol>
+<li>已经验证过找到的子串能否重复利用以减少子串的多次遍历呢？</li>
+<li>在验证子串的时候使用了一个循环，能否将这个循环和查找子串的过程的循环结合起来以减少复杂度呢？</li>
+</ol>
+<h2 id="动态规划法"><a href="#动态规划法" class="headerlink" title="动态规划法"></a>动态规划法</h2><p>先从第一个点入手，我们需要将已经判断过子串信息便能后续利用起来。那么应该如何利用呢？</p>
+<p>在暴力破解法中的校验过程中，可以将已经判断过不符合条件的子串记录在一个varifyMap，即记录：</p>
+<ol>
+<li>子串的中心点center;</li>
+<li>上一次以这个中心收缩的不符合条件的右边界right;</li>
+</ol>
+<p>并且当之后传入同样以center为中心的子串，如果该子串的边界大于等于上次不符合条件的边界记录，那么该子串一定不是回文子串。于是我们将代码更改如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">longestPalindrome</span>(<span class="params">s</span>) </span>&#123;  </span><br><span class="line">  <span class="keyword">if</span> (s.length &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> s;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 存储已经判断过的子串信息</span></span><br><span class="line">  <span class="keyword">let</span> varifyMap = &#123;&#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 验证子串函数</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">varifySubStr</span>(<span class="params">start, end</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> center = (start + end) / <span class="number">2</span>;</span><br><span class="line">     </span><br><span class="line">    <span class="keyword">if</span> (varifyMap[center] &amp;&amp; end &gt;= varifyMap[center]) &#123;</span><br><span class="line">      <span class="comment">// 如果之前有相同中心的判断记录并且不符合条件的边界小于等于需要判断的子串，那么该子串一定不是回文子串</span></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">    <span class="keyword">while</span> (start &lt; end) &#123;</span><br><span class="line">      <span class="keyword">if</span> (s[start] !== s[end]) &#123;</span><br><span class="line">        <span class="comment">// 将不符合条件的边界存储起来</span></span><br><span class="line">        varifyMap[center] = end;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      start++;</span><br><span class="line">      end--;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> length = s.length; length &gt; <span class="number">1</span>; length--) &#123;</span><br><span class="line">    <span class="comment">// 第一个循环，从最长的长度开始遍历长度</span></span><br><span class="line">    <span class="keyword">let</span> start = s.length - length;</span><br><span class="line">    <span class="keyword">let</span> end = s.length - <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>(start &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">// 第二个循环，从原始字符串的尾部开始找出所有的子串</span></span><br><span class="line">      </span><br><span class="line">      <span class="keyword">if</span> (varifySubStr(start, end)) &#123;</span><br><span class="line">        <span class="comment">// 如果找到了回文字符串，就立即返回</span></span><br><span class="line">        <span class="keyword">return</span> s.substring(start, end+<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      end--;</span><br><span class="line">      start--;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> s[s.length - <span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>似乎感觉优化成功了，但是这里使用了更多的存储空间来存储之前的判断信息，即使减少的时间复杂度，但是增加了更多的空间复杂度。如果遇到特别长的并且最长回文子串很短的子串，这个算法反而会花费更多的计算时间。</p>
+<p>优化结果(相较于暴力破解法):</p>
+<ol>
+<li>时间复杂度 O(n^3) =&gt; O(n^2);</li>
+<li>空间复杂度 O(1) =&gt; O(n^2);</li>
+</ol>
+<h2 id="中心扩展法"><a href="#中心扩展法" class="headerlink" title="中心扩展法"></a>中心扩展法</h2><p>那么现在尝试第二种思路 =&gt; 将验证过程的循环和子串遍历的循环整合成一个。</p>
+<p>经过上面的尝试，不难发现，确定一个回文子串有两种方法：</p>
+<ul>
+<li>找到子串的左右边界；</li>
+<li>找到子串的中心点和其中的一个边界点；</li>
+</ul>
+<p>暴力破解法尝试的是第一种方法，那第二种方法是不是有奇效呢？那我们来试一下：</p>
+<ol>
+<li>遍历原字符串的每一个点，以其为中心center；</li>
+<li>以center向左右两侧展开，找到以center为中心点的最长的回文串；</li>
+<li>在2的循环中，记录并比较回文串的长度，存储最长的回文子串并返回；</li>
+</ol>
+<p>OK! Start coding!</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">longestPalindrome</span> (<span class="params">s</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!s) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 以center为中心展开，查找最长的回文串</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">findLongestResByCenter</span>(<span class="params">s, left, right</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> [l, r] = [left, right];</span><br><span class="line">    <span class="keyword">while</span> (l &gt;= <span class="number">0</span> &amp;&amp; r &lt; s.length &amp;&amp; s[l] == s[r]) &#123;</span><br><span class="line">      l--;</span><br><span class="line">      r++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [l+<span class="number">1</span>, r<span class="number">-1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">let</span> [start, end] = [<span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> center = <span class="number">0</span>; center &lt; s.length; center++) &#123;</span><br><span class="line">    <span class="comment">// 遍历中心点center</span></span><br><span class="line">    <span class="keyword">let</span> [l1, r1] = findLongestResByCenter(s, center, center);</span><br><span class="line">    <span class="keyword">let</span> [l2, r2] = findLongestResByCenter(s, center, center + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">let</span> [left, right] = r1 - l1 &gt; r2 - l2 ? [l1, r1] : [l2, r2];</span><br><span class="line">    <span class="keyword">if</span> (right - left &gt; end - start) &#123;</span><br><span class="line">      start = left;</span><br><span class="line">      end = right;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> s.substring(start, end+<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在该算法中，外层遍历中心点有一个循环，内层查找并验证子串有一个循环，因此时间复杂度成功地降到了O(n^2)，并且也未增加额外的存储空间。</p>
+<p>暴力破解法 =&gt; 中心扩展法:</p>
+<ul>
+<li>时间复杂度: O(n^3) =&gt; O(n^2);</li>
+</ul>
+<h2 id="Manacher-算法"><a href="#Manacher-算法" class="headerlink" title="Manacher 算法"></a>Manacher 算法</h2><p>在中心扩展算法中还存在可以优化的点：</p>
+<ul>
+<li>是否可以解决回文串长度奇偶的问题，减少一轮循环；</li>
+<li>已经判断过的回文串是否可以利用起来；</li>
+</ul>
+<p>于是，Manacher算法诞生了。</p>
+<p>关于Manacher算法网上各种详细的解释已经很多，这里笔者就不再赘述，只是阐释一下笔者自己的理解。</p>
+<p>首先，解决回文串长度奇偶的问题。对于任意一个字符串，在其中和首尾插入字符串中并不存在的一个字符，例如<code>#</code>，无论原字符串长度奇偶，变换后都是偶数，于是”dabbac” 变成了 “#d#a#b#b#a#c#”，”dababac” 变成了 “#d#a#b#a#b#a#c#”。变化后的字符串并不影响之前的回文子串分布，并且在该变换后的字符串中存在的回文字符串一定是奇数长度的，即为 “#c#b#b#c#” 或者 “#c#a#c#” 这种形式。</p>
+<p>然后，我们考虑将回文串查找过程中已经验证过的子串利用起来：</p>
+<ol>
+<li>首先假设在计算过程中已经找到一个目前标杆回文子串flagStr，它的中心在原字符串索引为<code>center</code>, 它的右边界在原字符串索引为<code>right</code>，每当新的扩展中心点<code>i</code>超过<code>right</code>时，更新<code>center</code>为<code>i</code>，更新<code>right</code>为以<code>i</code>中心的最长回文串的右边界；</li>
+<li>对于标杆回文子串flagStr，在flagStr的左半径如果存在回文子串preStr，假设其中心为<code>preCenter</code>，那么在其右半径一定也存在一个以<code>preCenterMirror</code>为中心的回文子串preStrMirror, 其中 <code>preCenterMirror</code> 为 <code>preCenter</code> 对于 <code>center</code> 的镜像点；</li>
+<li>所以在center之后的点就可以省去重复遍历以<code>preCenterMirror</code>的为中心的回文串，假设<code>preStr</code>中心到边界的长度为<code>R</code>（即回文串的半径）。那么对于<code>preCenterMirror</code>的回文串，只需要:<ul>
+<li>当 preCenterMirror + R &gt; right，从right开始扩展回文串；</li>
+<li>当 preCenterMirror + R &lt; right, 从 preCenterMirror + R 开始扩展回文串；</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，我们需要在中心扩展法的基础上增加两个操作：</p>
+<ul>
+<li>在原字符串中各字符间即首尾插入’#’以使原字符串始终为偶数;</li>
+<li>用一个与原字符串同样长度的数组p记录各个字符点为中心点的最长回文串信息;</li>
+<li>存储目前最长回文串的中心点及右边界;</li>
+</ul>
+<p>为了避免在转换后字符串计算中遍历越界，故在首尾加入不同的两个字符’$’ 和 ‘@’;</p>
+<p>由于转换后的字符串是原字符串长度的两倍，最后找出的最长回文子串的中心索引<code>maxCenter</code>长度<code>maxLen</code>，转换为原字符串中，中心索引为<code>Math.floor(maxCenter / 2)</code>，长度为<code>maxLen / 2</code>。</p>
+<p>根据以上思路，start coding:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">longestPalindrome</span> (<span class="params">s</span>) </span>&#123;    </span><br><span class="line">  <span class="keyword">let</span> t = s.split(<span class="string">''</span>).join(<span class="string">'#'</span>);</span><br><span class="line">  t = <span class="string">`$#<span class="subst">$&#123;t&#125;</span>#@`</span>;</span><br><span class="line">  <span class="keyword">let</span> n = t.length;</span><br><span class="line">  <span class="comment">// 数组p用来记录已经扩展成功的子串中心点以及半径，p[i] = R，i为中心点索引，R为回文串半径</span></span><br><span class="line">  <span class="keyword">let</span> p = <span class="keyword">new</span> <span class="built_in">Array</span>(n).fill(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">let</span> [center, right] = [<span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">  <span class="keyword">let</span> maxLen = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">let</span> maxCenter = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; n - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (right &gt; i) &#123;</span><br><span class="line">      <span class="comment">// 如果目前扩展的中心点在目前已计算出的标杆回文子串之内，寻找以i为中心的最长回文串的起始半径</span></span><br><span class="line">      <span class="comment">// 因为center始终小于等于i, 所以i一定是大于 2*right - center的，即如果 i &lt; right, 那么 i 一定在目前标杆回文子串之内</span></span><br><span class="line">      p[i] = <span class="built_in">Math</span>.min(right - i, p[<span class="number">2</span> * center - i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (t[i + p[i] + <span class="number">1</span>] == t[i - p[i] - <span class="number">1</span>]) &#123;</span><br><span class="line">      <span class="comment">// 中心扩展法计算回文串半径</span></span><br><span class="line">      p[i]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (i + p[i] &gt; right) &#123;</span><br><span class="line">      <span class="comment">// 当新的回文串边界超过了目前的标杆回文子串边界，更新标杆回文子串信息</span></span><br><span class="line">      center = i;</span><br><span class="line">      right = i + p[i];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (p[i] &gt; maxLen) &#123;</span><br><span class="line">      <span class="comment">// 更新最长回文串的信息</span></span><br><span class="line">      maxLen = p[i];</span><br><span class="line">      maxCenter = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> start = <span class="built_in">parseInt</span>((maxCenter - maxLen) / <span class="number">2</span>);</span><br><span class="line">  <span class="keyword">return</span> s.substring(start, start + maxLen);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在Manacher算法中，我们使用了一个与原字符串两倍长度的数组存储回文子串信息，并以此减少了中心扩展半径的循环，优化结果（相较于中心扩展法）：</p>
+<ul>
+<li>时间复杂度: O(n^2) =&gt; O(n);</li>
+<li>空间复杂度: O(1) =&gt; O(n);</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+            
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2016/08/27/2016-08-27-express-origin-code-analysis/" rel="next" title="express源码分析">
+                  <i class="fa fa-chevron-left"></i> express源码分析
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目分析"><span class="nav-number">2.</span> <span class="nav-text">题目分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴力解题法"><span class="nav-number">3.</span> <span class="nav-text">暴力解题法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化思路"><span class="nav-number">4.</span> <span class="nav-text">优化思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态规划法"><span class="nav-number">5.</span> <span class="nav-text">动态规划法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中心扩展法"><span class="nav-number">6.</span> <span class="nav-text">中心扩展法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manacher-算法"><span class="nav-number">7.</span> <span class="nav-text">Manacher 算法</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/uploads/avatar.png"
+      alt="Shadow Wood">
+  <p class="site-author-name" itemprop="name">Shadow Wood</p>
+  <div class="site-description" itemprop="description">不知道写啥0.0</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/shadowwood" title="GitHub &rarr; https://github.com/shadowwood" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:shadowwood@foxmail.com" title="E-Mail &rarr; mailto:shadowwood@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.rapospectre.com/" title="https://www.rapospectre.com/" rel="noopener" target="_blank">RaPoSpectre</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://vkwk.space/" title="https://vkwk.space/" rel="noopener" target="_blank">Viking Warlock</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://djjowfy.com/" title="http://djjowfy.com/" rel="noopener" target="_blank">djjowfy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://toxni.com/" title="http://toxni.com/" rel="noopener" target="_blank">Toxni</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.yasicyu.com/" title="https://www.yasicyu.com/" rel="noopener" target="_blank">Yasic Yu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://maples7.com/" title="http://maples7.com/" rel="noopener" target="_blank">Maples7</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shadow Wood</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.0</div>
+  <br/>
+  Hosted by <a target="_blank" rel="external nofollow" href="https://pages.coding.me"><b>Coding Pages</b></a>&<a target="_blank" rel="external nofollow" href="https://pages.github.com"><b>GitHub Pages</b></a>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/muse.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://shadowwood-me.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "https://shadowwood.me/2019/09/08/2019-09-08-leetcode-longest-palindrome/";
+    this.page.identifier = "2019/09/08/2019-09-08-leetcode-longest-palindrome/";
+    this.page.title = 'leetcode刷题记---最长回文子串';};
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://shadowwood-me.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    (function() {
+      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+      if (offsetTop <= 0) {
+        // load directly when there's no a scrollbar
+        window.addEventListener('load', loadComments, false);
+      } else {
+        var disqus_scroll = () => {
+          // offsetTop may changes because of manually resizing browser window or lazy loading images.
+          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
+          var scrollTop = window.scrollY;
+
+          // pre-load comments a bit? (margin or anything else)
+          if (offsetTop - scrollTop < 60) {
+            window.removeEventListener('scroll', disqus_scroll);
+            loadComments();
+          }
+        };
+        window.addEventListener('scroll', disqus_scroll);
+      }
+    })();
+  
+</script>
+
+</body>
+</html>
